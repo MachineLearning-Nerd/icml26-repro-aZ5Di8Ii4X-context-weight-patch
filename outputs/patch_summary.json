@@ -1,0 +1,99 @@
+{
+  "paper": "arXiv 2511.17864",
+  "trials": [
+    {
+      "seed": 0,
+      "d": 64,
+      "hidden": 128,
+      "match_err": 6.071532165918825e-18,
+      "exact": true,
+      "rank1_gate": true,
+      "rank1_up": true,
+      "sv_gate_top2": [
+        0.0783495748248786,
+        7.543451665109023e-18
+      ],
+      "sv_up_top2": [
+        0.09013069882082027,
+        1.3580469324211021e-17
+      ]
+    },
+    {
+      "seed": 1,
+      "d": 64,
+      "hidden": 128,
+      "match_err": 8.673617379884035e-18,
+      "exact": true,
+      "rank1_gate": true,
+      "rank1_up": true,
+      "sv_gate_top2": [
+        0.0874031582433013,
+        1.1188542811352522e-17
+      ],
+      "sv_up_top2": [
+        0.08467634867872528,
+        1.0056251795350334e-17
+      ]
+    },
+    {
+      "seed": 2,
+      "d": 64,
+      "hidden": 128,
+      "match_err": 6.938893903907228e-18,
+      "exact": true,
+      "rank1_gate": true,
+      "rank1_up": true,
+      "sv_gate_top2": [
+        0.09064481829789425,
+        1.0019340871864151e-17
+      ],
+      "sv_up_top2": [
+        0.09724723261653315,
+        1.4113139419483664e-17
+      ]
+    },
+    {
+      "seed": 3,
+      "d": 64,
+      "hidden": 128,
+      "match_err": 8.673617379884035e-18,
+      "exact": true,
+      "rank1_gate": true,
+      "rank1_up": true,
+      "sv_gate_top2": [
+        0.11495503945231623,
+        1.3693093162696487e-17
+      ],
+      "sv_up_top2": [
+        0.10953811546346302,
+        1.8709077593268648e-17
+      ]
+    },
+    {
+      "seed": 4,
+      "d": 64,
+      "hidden": 128,
+      "match_err": 4.336808689942018e-18,
+      "exact": true,
+      "rank1_gate": true,
+      "rank1_up": true,
+      "sv_gate_top2": [
+        0.08495615035269675,
+        1.2586207929741043e-17
+      ],
+      "sv_up_top2": [
+        0.08380567857583256,
+        1.1859458670552554e-17
+      ]
+    }
+  ],
+  "C1": {
+    "all_exact": true,
+    "all_rank1": true,
+    "sample_match_err": 6.071532165918825e-18
+  },
+  "control": {
+    "random_patch_mismatch": 0.012135651525399926,
+    "mismatch_confirmed": true
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "title": "Repro - Context = Rank-1 Weight Patches",
+  "emoji": "🎯",
+  "space_id": "DineshAI/aZ5Di8Ii4X",
+  "paper": {
+    "arxiv_id": "2511.17864",
+    "openreview_id": "aZ5Di8Ii4X"
+  },
+  "tags": [
+    "icml2026-repro",
+    "paper-aZ5Di8Ii4X"
+  ],
+  "updated_at": "2026-07-17T12:38:26+00:00",
+  "root": {
+    "slug": "index",
+    "title": "Repro - Context = Rank-1 Weight Patches",
+    "file": "pages/index.md",
+    "children": [
+      {
+        "slug": "claim-1-rank-1-patches-exact",
+        "title": "Claim 1 — rank-1 patches exact",
+        "file": "pages/claim-1-rank-1-patches-exact/page.md",
+        "children": []
+      },
+      {
+        "slug": "claim-2-controllability-conditions",
+        "title": "Claim 2 — controllability conditions",
+        "file": "pages/claim-2-controllability-conditions/page.md",
+        "children": []
+      },
+      {
+        "slug": "methods-environment",
+        "title": "Methods & environment",
+        "file": "pages/methods-environment/page.md",
+        "children": []
+      },
+      {
+        "slug": "negative-controls-falsification",
+        "title": "Negative controls & falsification",
+        "file": "pages/negative-controls-falsification/page.md",
+        "children": []
+      },
+      {
+        "slug": "conclusion",
+        "title": "Conclusion",
+        "file": "pages/conclusion/page.md",
+        "children": []
+      }
+    ]
+  },
+  "agent_view_tokens": 1880,
+  "revision": "1784291906231515947"
+}

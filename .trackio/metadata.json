@@ -1,0 +1,18 @@
+{
+  "space_id": "DineshAI/aZ5Di8Ii4X",
+  "emoji": "🎯",
+  "created_at": "2026-07-17T12:37:40+00:00",
+  "paper": {
+    "arxiv_id": "2511.17864",
+    "openreview_id": "aZ5Di8Ii4X"
+  },
+  "tags": [
+    "icml2026-repro",
+    "paper-aZ5Di8Ii4X"
+  ],
+  "autosync": true,
+  "private": false,
+  "title": "Repro - Context = Rank-1 Weight Patches",
+  "last_page": "conclusion",
+  "local_dashboards": {}
+}
