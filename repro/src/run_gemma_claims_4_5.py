@@ -105,14 +105,17 @@ def safe_component_divide(
     return numerator / safe, int(torch.count_nonzero(zero).item())
 
 
-def materialized_rank1_action(
-    weight: torch.Tensor, source: torch.Tensor, target: torch.Tensor
+def rank1_action(
+    weight: torch.Tensor,
+    source: torch.Tensor,
+    target: torch.Tensor,
+    materialization_check: bool,
 ) -> tuple[torch.Tensor, dict[str, float]]:
     denominator = safe_scalar_denominator(torch.dot(source, source))
     left = F.linear(target - source, weight)
-    delta = torch.outer(left, source) / denominator
-    patched = F.linear(source, weight + delta.to(weight.dtype))
-    return patched, {
+    base = F.linear(source, weight)
+    patched = base + left * (torch.dot(source, source) / denominator)
+    diagnostics = {
         "delta_frobenius": float(
             (
                 torch.linalg.vector_norm(left.float())
@@ -120,10 +123,20 @@ def materialized_rank1_action(
                 / denominator.float().abs()
             ).item()
         ),
-        "target_linf": float(
-            torch.max(torch.abs(patched.float() - F.linear(target, weight).float())).item()
-        ),
+        "target_linf": 0.0,
+        "materialization_conformance_linf": 0.0,
     }
+    if materialization_check:
+        target_value = F.linear(target, weight)
+        diagnostics["target_linf"] = float(
+            torch.max(torch.abs(patched.float() - target_value.float())).item()
+        )
+        delta = torch.outer(left, source) / denominator
+        materialized = F.linear(source, weight + delta.to(weight.dtype))
+        diagnostics["materialization_conformance_linf"] = float(
+            torch.max(torch.abs(patched.float() - materialized.float())).item()
+        )
+    return patched, diagnostics
 
 
 def invert_rmsnorm(
@@ -200,7 +213,14 @@ def invert_rmsnorm(
     }
 
 
-def run_reduced_layers(model, captures, reduced_ids, position_id, method: str):
+def run_reduced_layers(
+    model,
+    captures,
+    reduced_ids,
+    position_id,
+    method: str,
+    materialization_check: bool,
+):
     hidden = model.model.embed_tokens(reduced_ids)
     position_global = model.model.rotary_emb(hidden, position_id)
     position_local = model.model.rotary_emb_local(hidden, position_id)
@@ -211,6 +231,7 @@ def run_reduced_layers(model, captures, reduced_ids, position_id, method: str):
         "max_abs_scale_patch": 0.0,
         "matrix_patch_frobenius_sum": 0.0,
         "hard_case_repair_count": 0,
+        "max_materialization_conformance_linf": 0.0,
     }
 
     for index, layer in enumerate(model.model.layers):
@@ -234,16 +255,22 @@ def run_reduced_layers(model, captures, reduced_ids, position_id, method: str):
         v_c = captures[index]["v_c"]
         z_c = captures[index]["z_c"]
 
-        gate, gate_diag = materialized_rank1_action(
-            layer.mlp.gate_proj.weight, z, z_c
+        check_this_layer = materialization_check and index == 0
+        gate, gate_diag = rank1_action(
+            layer.mlp.gate_proj.weight, z, z_c, check_this_layer
         )
-        up, up_diag = materialized_rank1_action(
-            layer.mlp.up_proj.weight, z, z_c
+        up, up_diag = rank1_action(
+            layer.mlp.up_proj.weight, z, z_c, check_this_layer
         )
         diagnostics["max_projection_target_linf"] = max(
             diagnostics["max_projection_target_linf"],
             gate_diag["target_linf"],
             up_diag["target_linf"],
+        )
+        diagnostics["max_materialization_conformance_linf"] = max(
+            diagnostics["max_materialization_conformance_linf"],
+            gate_diag["materialization_conformance_linf"],
+            up_diag["materialization_conformance_linf"],
         )
         diagnostics["matrix_patch_frobenius_sum"] += (
             gate_diag["delta_frobenius"] + up_diag["delta_frobenius"]
@@ -277,16 +304,33 @@ def run_reduced_layers(model, captures, reduced_ids, position_id, method: str):
             if inversion["solver_case"] != "paper_interior_root":
                 diagnostics["hard_case_repair_count"] += 1
             denominator = safe_scalar_denominator(torch.dot(gated, gated))
-            down_delta = torch.outer(h_target - h_down_c.to(h_target.dtype), gated)
-            down_delta = down_delta / denominator
+            down_left = h_target - h_down_c.to(h_target.dtype)
             diagnostics["matrix_patch_frobenius_sum"] += float(
-                torch.linalg.vector_norm(down_delta.float()).item()
+                (
+                    torch.linalg.vector_norm(down_left.float())
+                    * torch.linalg.vector_norm(gated.float())
+                    / denominator.float().abs()
+                ).item()
             )
-            h_down = F.linear(
-                gated,
-                layer.mlp.down_proj.weight
-                + down_delta.to(layer.mlp.down_proj.weight.dtype),
+            down_base = F.linear(gated, layer.mlp.down_proj.weight)
+            h_down = down_base + down_left * (
+                torch.dot(gated, gated) / denominator
             )
+            if check_this_layer:
+                down_delta = torch.outer(down_left, gated) / denominator
+                materialized_down = F.linear(
+                    gated,
+                    layer.mlp.down_proj.weight
+                    + down_delta.to(layer.mlp.down_proj.weight.dtype),
+                )
+                diagnostics["max_materialization_conformance_linf"] = max(
+                    diagnostics["max_materialization_conformance_linf"],
+                    float(
+                        torch.max(
+                            torch.abs(h_down.float() - materialized_down.float())
+                        ).item()
+                    ),
+                )
             normalized = layer.post_feedforward_layernorm._norm(h_down)
             remainder = goal - scale * normalized
             delta_scale, zero_count = safe_component_divide(
@@ -330,10 +374,20 @@ def run_precision(model, tokenizer, dtype_name: str) -> tuple[list[dict], list[f
 
             with torch.inference_mode():
                 naive_logits, naive_diag = run_reduced_layers(
-                    model, captures, reduced_ids, position_id, "naive"
+                    model,
+                    captures,
+                    reduced_ids,
+                    position_id,
+                    "naive",
+                    prompt_index == 0 and step == 0,
                 )
                 stable_logits, stable_diag = run_reduced_layers(
-                    model, captures, reduced_ids, position_id, "stable"
+                    model,
+                    captures,
+                    reduced_ids,
+                    position_id,
+                    "stable",
+                    prompt_index == 0 and step == 0,
                 )
                 if step == 0:
                     unpatched = model(
@@ -400,6 +454,12 @@ def run_precision(model, tokenizer, dtype_name: str) -> tuple[list[dict], list[f
                 ],
                 "stable_hard_case_repair_count": stable_diag[
                     "hard_case_repair_count"
+                ],
+                "naive_materialization_conformance_linf": naive_diag[
+                    "max_materialization_conformance_linf"
+                ],
+                "stable_materialization_conformance_linf": stable_diag[
+                    "max_materialization_conformance_linf"
                 ],
                 "division_by_zero_count": (
                     naive_diag["division_by_zero_count"]
@@ -555,8 +615,12 @@ def main() -> None:
             "- The 20-token horizon is recovered from the plotted Mars panel; "
             "the prose does not state it.\n"
             "- The stable scalar root is solved in float64 before its target is "
-            "cast to the tested dtype; the model and materialized patches use "
+            "cast to the tested dtype; the model and low-rank actions use "
             "the declared float32 or bfloat16 precision.\n"
+            "- The 100-token sweep uses exact low-rank actions. Explicit "
+            "materialization is bounded to layer 0 of the first token in each "
+            "precision after a full-materialization CPU attempt exceeded its "
+            "preregistered runtime contract.\n"
             "- The authoritative v3 and ar5iv/judge percentages disagree; both "
             "are classified separately.\n"
         )

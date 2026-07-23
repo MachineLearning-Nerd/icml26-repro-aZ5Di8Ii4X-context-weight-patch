@@ -14,7 +14,7 @@
     "forced_baseline_history_after_mismatch": true,
     "patches_recomputed_each_token": true,
     "precisions": ["float32", "bfloat16"],
-    "update": "materialized rank-1 gate/up patches plus direct RMSNorm-scale patch"
+    "update": "exact low-rank gate/up patch action plus direct RMSNorm-scale patch, with a bounded explicit W+delta_W conformance check"
   },
   "fidelity_gates": {
     "evaluated_tokens_per_precision": 100,
