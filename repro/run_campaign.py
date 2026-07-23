@@ -61,6 +61,12 @@ def main() -> None:
     verifier = run_checked(
         [sys.executable, "repro/verifiers/verify_claims_1_2.py"]
     )
+    precision = run_checked(
+        [sys.executable, "repro/src/run_gemma_claims_4_5.py"]
+    )
+    precision_verifier = run_checked(
+        [sys.executable, "repro/verifiers/verify_claims_4_5.py"]
+    )
     tests = run_checked([sys.executable, "-m", "pytest", "repro/tests", "-q"])
 
     source_result = ROOT / "outputs" / "patch_summary.json"
@@ -89,6 +95,8 @@ def main() -> None:
         "script_output": script.stdout,
         "gemma_output": gemma.stdout,
         "verifier_output": verifier.stdout,
+        "precision_output": precision.stdout,
+        "precision_verifier_output": precision_verifier.stdout,
         "test_output": tests.stdout,
         "limitations": [
             "Random d=64, hidden=128 matrices only.",
@@ -107,6 +115,9 @@ def main() -> None:
         "3 1B layer-0 contract and independent explicit-patch check pass.\n\n"
         "**Claim 2: VERIFIED in this experiment.** All 26 sequential layer "
         "contracts, final hidden state, logits, and top-1 prediction pass.\n\n"
+        "**Claims 4 and 5:** See their deterministic verifier output. Exact "
+        "percentages are classified independently against arXiv v3 and the "
+        "judged ar5iv rendering.\n\n"
         f"- Git SHA: `{metadata['git_sha']}`\n"
         f"- Lock SHA-256: `{metadata['uv_lock_sha256']}`\n"
         f"- Runtime: {metadata['runtime_seconds']:.3f} seconds\n"
@@ -119,6 +130,7 @@ def main() -> None:
                 "baseline_accepted": accepted,
                 "claim_1": "VERIFIED",
                 "claim_2": "VERIFIED",
+                "claims_4_5": "SEE_VERIFIER",
             },
             indent=2,
         )

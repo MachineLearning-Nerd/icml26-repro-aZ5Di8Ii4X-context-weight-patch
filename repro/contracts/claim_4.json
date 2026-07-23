@@ -1,0 +1,31 @@
+{
+  "claim": 4,
+  "source": {
+    "paper": "arXiv:2511.17864v3",
+    "section": "Section 4",
+    "anchors": ["sec:experiments", "fig:generation_metrics", "fig:generation_summary"]
+  },
+  "statement": "Float32 implicit patches produce essentially identical logits and 100% greedy token agreement, while the standard bfloat16 implementation produces 87.5% agreement.",
+  "protocol": {
+    "model": "unsloth/gemma-3-1b-it@5b11413a10db4e486ef16a20101fd028f8f2499c",
+    "weight_blob": "cf8782aa8cd58000ba309c9f5ac84a810c3bf7bf",
+    "prompts": 5,
+    "greedy_tokens_per_prompt": 20,
+    "forced_baseline_history_after_mismatch": true,
+    "patches_recomputed_each_token": true,
+    "precisions": ["float32", "bfloat16"],
+    "update": "materialized rank-1 gate/up patches plus direct RMSNorm-scale patch"
+  },
+  "fidelity_gates": {
+    "evaluated_tokens_per_precision": 100,
+    "all_five_source_prompts": true,
+    "full_26_layer_model": true,
+    "deterministic_argmax": true,
+    "negative_control_min_logit_linf": 0.01
+  },
+  "verdict_rule": {
+    "VERIFIED": "All fidelity gates pass, float32 agreement is 1.0, float32 maximum logit L-infinity is <= 0.001, and bfloat16 agreement is exactly 0.875.",
+    "FALSIFIED": "All fidelity gates pass and either float32 violates its exact contract or bfloat16 agreement differs from 0.875.",
+    "BLOCKED": "Any fidelity or evidence-integrity gate fails."
+  }
+}
