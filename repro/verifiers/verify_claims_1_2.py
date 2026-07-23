@@ -82,6 +82,31 @@ def main() -> None:
         (claim_dir / "independent_checker_output.json").write_text(
             json.dumps(output, indent=2) + "\n"
         )
+    (ARTIFACTS / "claim_1" / "EVAL.md").write_text(
+        "# Claim 1 evaluation\n\n"
+        f"**Verdict: {output['claim_1']}**\n\n"
+        f"- Layer-0 output L-infinity error: "
+        f"{first['patched_output_linf']:.6e}\n"
+        f"- Explicit gate/up patch errors: "
+        f"{first['explicit_gate_patch_linf']:.6e} / "
+        f"{first['explicit_up_patch_linf']:.6e}\n"
+        f"- Omitted-scale negative-control error: "
+        f"{first['omit_scale_patch_linf']:.6e}\n\n"
+        "Full pretrained Gemma 3 1B layer-0 parameters are used.\n"
+    )
+    (ARTIFACTS / "claim_2" / "EVAL.md").write_text(
+        "# Claim 2 evaluation\n\n"
+        f"**Verdict: {output['claim_2']}**\n\n"
+        f"- Sequential layers checked: {len(layers)}\n"
+        f"- Maximum layer-output L-infinity error: "
+        f"{max(layer['patched_output_linf'] for layer in layers):.6e}\n"
+        f"- Final hidden/logit L-infinity error: "
+        f"{raw['final_hidden_linf']:.6e} / {raw['final_logit_linf']:.6e}\n"
+        f"- Unpatched negative-control logit error: "
+        f"{raw['negative_unpatched_logit_linf']:.6e}\n"
+        f"- Top-1 agreement: {raw['top1_agreement']}\n\n"
+        "The patch is constructed inductively at every one of the 26 layers.\n"
+    )
     print(json.dumps(output, indent=2))
     if not (c1_pass and c2_pass):
         raise SystemExit(1)
@@ -89,4 +114,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

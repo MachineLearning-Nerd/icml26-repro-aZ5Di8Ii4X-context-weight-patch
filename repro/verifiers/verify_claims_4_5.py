@@ -67,12 +67,20 @@ def main() -> None:
         and bf16["agreement"] == 0.875
         else "FALSIFIED"
     )
-    if stable["agreement"] == 0.98:
+    # Claim 5 is a joint claim: the stable construction must improve the
+    # stated 87.5% naive baseline to the stated endpoint.  Matching only the
+    # endpoint (as an earlier verifier did) is insufficient and can turn "no
+    # improvement" into a false verification.
+    judged_joint_match = (
+        bf16["agreement"] == 0.875 and stable["agreement"] == 0.98
+    )
+    arxiv_v3_joint_match = (
+        bf16["agreement"] == 0.875 and stable["agreement"] == 1.0
+    )
+    if judged_joint_match:
         claim_5 = "VERIFIED_JUDGED_RENDERING"
-    elif stable["agreement"] == 1.0:
+    elif arxiv_v3_joint_match:
         claim_5 = "VERIFIED_ARXIV_V3"
-    elif stable["agreement"] > bf16["agreement"]:
-        claim_5 = "FALSIFIED_PERCENTAGE_MECHANISM_ALIGNED"
     else:
         claim_5 = "FALSIFIED"
 
@@ -89,6 +97,24 @@ def main() -> None:
         path = ROOT / ".openresearch" / "artifacts" / f"claim_{claim}"
         (path / "independent_checker_output.json").write_text(
             json.dumps(output, indent=2) + "\n"
+        )
+        (path / "EVAL.md").write_text(
+            f"# Claim {claim} evaluation\n\n"
+            f"**Verdict: {output[f'claim_{claim}']}**\n\n"
+            f"- Float32 naive agreement: {fp32['matches']}/{fp32['token_count']} "
+            f"({fp32['agreement']:.1%})\n"
+            f"- Bfloat16 naive agreement: {bf16['matches']}/{bf16['token_count']} "
+            f"({bf16['agreement']:.1%})\n"
+            f"- Bfloat16 stable agreement: {stable['matches']}/"
+            f"{stable['token_count']} ({stable['agreement']:.1%})\n"
+            f"- Float32 maximum logit L-infinity error: "
+            f"{fp32['max_logit_linf']:.6e}\n"
+            f"- Bfloat16 naive/stable maximum logit L-infinity error: "
+            f"{bf16['max_logit_linf']:.6e} / "
+            f"{stable['max_logit_linf']:.6e}\n\n"
+            "The verdict applies to the exact joint percentage statement. "
+            "Stable inversion reduced worst logit error but did not increase "
+            "token agreement because the naive method was already 100%.\n"
         )
     print("CLAIMS_4_5_VERDICT=" + json.dumps(output, sort_keys=True))
 

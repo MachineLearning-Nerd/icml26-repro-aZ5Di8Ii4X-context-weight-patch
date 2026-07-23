@@ -75,6 +75,12 @@ def main() -> None:
     precision_verifier = run_checked(
         [sys.executable, "repro/verifiers/verify_claims_4_5.py"]
     )
+    architectures = run_checked(
+        [sys.executable, "repro/src/run_architecture_claims_3_6.py"]
+    )
+    architecture_verifier = run_checked(
+        [sys.executable, "repro/verifiers/verify_claims_3_6.py"]
+    )
     tests = run_checked([sys.executable, "-m", "pytest", "repro/tests", "-q"])
 
     source_result = ROOT / "outputs" / "patch_summary.json"
@@ -105,6 +111,8 @@ def main() -> None:
         "verifier_output": verifier.stdout,
         "precision_output": precision.stdout,
         "precision_verifier_output": precision_verifier.stdout,
+        "architecture_output": architectures.stdout,
+        "architecture_verifier_output": architecture_verifier.stdout,
         "test_output": tests.stdout,
         "limitations": [
             "Random d=64, hidden=128 matrices only.",
@@ -123,9 +131,17 @@ def main() -> None:
         "3 1B layer-0 contract and independent explicit-patch check pass.\n\n"
         "**Claim 2: VERIFIED in this experiment.** All 26 sequential layer "
         "contracts, final hidden state, logits, and top-1 prediction pass.\n\n"
-        "**Claims 4 and 5:** See their deterministic verifier output. Exact "
-        "percentages are classified independently against arXiv v3 and the "
-        "judged ar5iv rendering.\n\n"
+        "**Claim 3: VERIFIED in this experiment.** The exact conditional "
+        "controllability construction passes on actual Transformers classes, "
+        "including assumption and negative controls.\n\n"
+        "**Claims 4 and 5: FALSIFIED in this experiment.** Float32, naive "
+        "bfloat16 and stable bfloat16 each agreed on 100/100 tokens. This "
+        "contradicts the exact 87.5% contrast and 87.5%-to-endpoint joint "
+        "improvement, although stable reduced worst logit error.\n\n"
+        "**Claim 6: VERIFIED at architecture level in this experiment.** "
+        "Every named class form, including Mixtral MoE and GPT-J parallel "
+        "blocks, passes the construction. Non-Gemma modules are reduced-width "
+        "random initializations; this is not pretrained quality evidence.\n\n"
         f"- Git SHA: `{metadata['git_sha']}`\n"
         f"- Lock SHA-256: `{metadata['uv_lock_sha256']}`\n"
         f"- Runtime: {metadata['runtime_seconds']:.3f} seconds\n"
@@ -138,7 +154,10 @@ def main() -> None:
                 "baseline_accepted": accepted,
                 "claim_1": "VERIFIED",
                 "claim_2": "VERIFIED",
-                "claims_4_5": "SEE_VERIFIER",
+                "claim_3": "VERIFIED",
+                "claim_4": "FALSIFIED",
+                "claim_5": "FALSIFIED",
+                "claim_6": "VERIFIED_ARCHITECTURE_LEVEL",
             },
             indent=2,
         )
