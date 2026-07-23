@@ -303,7 +303,7 @@ def main() -> None:
             "platform": platform.platform(),
             "machine": platform.machine(),
             "logical_cpu_count": os.cpu_count(),
-            "gpu_used": false,
+            "gpu_used": False,
         },
     }
     raw_text = json.dumps(raw, indent=2) + "\n"
