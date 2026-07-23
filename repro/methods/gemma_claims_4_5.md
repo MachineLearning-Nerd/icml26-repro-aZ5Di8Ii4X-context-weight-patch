@@ -17,6 +17,9 @@ stable route independently solves the Appendix-B scalar root in float64,
 casts the target vector to the tested model dtype, explicitly materializes the
 rank-1 down-projection patch, and applies the component-wise remainder patch.
 The root residual and target RMS are recorded for every layer and token.
+If the paper's asserted root interval has no root, the implementation records
+that fact and uses the exact trust-region hard-case solution at
+`mu=min(m²)`; it never silently treats the missing root as an interior root.
 
 For every row the run records baseline and patched token IDs, maximum absolute
 logit error, total-variation distance, inversion residuals, and patch

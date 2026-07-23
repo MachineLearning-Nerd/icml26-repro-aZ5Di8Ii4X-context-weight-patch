@@ -128,7 +128,7 @@ def materialized_rank1_action(
 
 def invert_rmsnorm(
     goal: torch.Tensor, scale: torch.Tensor, target_rms: float
-) -> tuple[torch.Tensor, dict[str, float]]:
+) -> tuple[torch.Tensor, dict[str, float | str]]:
     """Solve the Appendix-B constrained inverse on its stated root interval."""
     goal64 = goal.double()
     scale64 = scale.double()
@@ -142,28 +142,52 @@ def invert_rmsnorm(
         return float(value.item())
 
     high_value = root_function(high)
-    if not math.isfinite(high_value) or high_value <= 0.0:
-        raise RuntimeError(
-            "Appendix-B root is not bracketed below min(scale^2)"
-        )
-    step = max(1.0, abs(minimum))
-    low = minimum - step
-    for _ in range(256):
-        if root_function(low) < 0.0:
-            break
-        step *= 2.0
+    if math.isfinite(high_value) and high_value > 0.0:
+        solver_case = "paper_interior_root"
+        step = max(1.0, abs(minimum))
         low = minimum - step
-    else:
-        raise RuntimeError("failed to bracket Appendix-B RMSNorm inverse")
-
-    for _ in range(128):
-        midpoint = (low + high) / 2.0
-        if root_function(midpoint) < 0.0:
-            low = midpoint
+        for _ in range(256):
+            if root_function(low) < 0.0:
+                break
+            step *= 2.0
+            low = minimum - step
         else:
-            high = midpoint
-    mu = (low + high) / 2.0
-    y = goal64 * scale64 / (scale_sq - mu)
+            raise RuntimeError("failed to bracket Appendix-B RMSNorm inverse")
+
+        for _ in range(128):
+            midpoint = (low + high) / 2.0
+            if root_function(midpoint) < 0.0:
+                low = midpoint
+            else:
+                high = midpoint
+        mu = (low + high) / 2.0
+        y = goal64 * scale64 / (scale_sq - mu)
+    else:
+        # The paper's existence proof overlooks the trust-region "hard case":
+        # when every numerator at min(m^2) is zero, F need not diverge there.
+        # The global constrained minimizer then has mu=min(m^2), uses the
+        # regular secular solution off that eigenspace, and fills the remaining
+        # sphere norm inside the minimum eigenspace.
+        solver_case = "hard_case_repair_no_paper_root"
+        mu = minimum
+        tolerance = max(1e-12, abs(minimum) * 1e-12)
+        minimum_mask = torch.abs(scale_sq - minimum) <= tolerance
+        y = torch.zeros_like(goal64)
+        regular = ~minimum_mask
+        y[regular] = (
+            goal64[regular]
+            * scale64[regular]
+            / (scale_sq[regular] - minimum)
+        )
+        remaining = goal64.numel() - float(torch.sum(y.square()).item())
+        if remaining < -1e-8:
+            raise RuntimeError(
+                "hard-case RMSNorm inverse has negative remaining norm"
+            )
+        indices = torch.nonzero(minimum_mask, as_tuple=False).flatten()
+        if indices.numel() == 0:
+            raise RuntimeError("hard-case minimum eigenspace is empty")
+        y[indices[0]] = math.sqrt(max(0.0, remaining))
     constraint_error = abs(float(torch.mean(y.square()).item()) - 1.0)
     target = (target_rms * y).to(goal.dtype)
     return target, {
@@ -171,6 +195,8 @@ def invert_rmsnorm(
         "constraint_error": constraint_error,
         "target_rms": float(torch.sqrt(torch.mean(target.double().square())).item()),
         "requested_rms": target_rms,
+        "solver_case": solver_case,
+        "paper_interval_high_value": high_value,
     }
 
 
@@ -184,6 +210,7 @@ def run_reduced_layers(model, captures, reduced_ids, position_id, method: str):
         "division_by_zero_count": 0,
         "max_abs_scale_patch": 0.0,
         "matrix_patch_frobenius_sum": 0.0,
+        "hard_case_repair_count": 0,
     }
 
     for index, layer in enumerate(model.model.layers):
@@ -247,6 +274,8 @@ def run_reduced_layers(model, captures, reduced_ids, position_id, method: str):
                 diagnostics["max_inversion_constraint_error"],
                 inversion["constraint_error"],
             )
+            if inversion["solver_case"] != "paper_interior_root":
+                diagnostics["hard_case_repair_count"] += 1
             denominator = safe_scalar_denominator(torch.dot(gated, gated))
             down_delta = torch.outer(h_target - h_down_c.to(h_target.dtype), gated)
             down_delta = down_delta / denominator
@@ -368,6 +397,9 @@ def run_precision(model, tokenizer, dtype_name: str) -> tuple[list[dict], list[f
                 ],
                 "stable_matrix_patch_frobenius_sum": stable_diag[
                     "matrix_patch_frobenius_sum"
+                ],
+                "stable_hard_case_repair_count": stable_diag[
+                    "hard_case_repair_count"
                 ],
                 "division_by_zero_count": (
                     naive_diag["division_by_zero_count"]

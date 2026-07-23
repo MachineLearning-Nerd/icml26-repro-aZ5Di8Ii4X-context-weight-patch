@@ -42,6 +42,18 @@ experimental result.
   constrained RMSNorm inverse, patches the down projection by rank one, and
   assigns the remaining component-wise error to the trainable scale vector.
 
+### Appendix-B root-existence caveat
+
+The appendix says its secular function diverges as the multiplier approaches
+`min(m²)` from below. This is only true when at least one coordinate attaining
+the minimum also has `g_k m_k != 0`; the stated assumption that the entire
+problem is nontrivial is insufficient. Gemma can enter the classical
+trust-region “hard case,” where no root exists on the paper's claimed
+interval. The runner records every occurrence and uses the exact boundary
+solution: solve regular coordinates at `mu=min(m²)` and fill the remaining
+sphere norm within the minimum eigenspace. Results from the paper formula and
+this mathematically necessary repair remain distinguishable in raw rows.
+
 ## Exact five prompts
 
 1. `Write a single-sentence weather forecast for Mars, from the perspective of a slightly annoyed robot:`
