@@ -57,6 +57,10 @@ def main() -> None:
     BASELINE.mkdir(parents=True, exist_ok=True)
 
     script = run_checked([sys.executable, "repro/src/run_patch.py"])
+    gemma = run_checked([sys.executable, "repro/src/run_gemma_claims_1_2.py"])
+    verifier = run_checked(
+        [sys.executable, "repro/verifiers/verify_claims_1_2.py"]
+    )
     tests = run_checked([sys.executable, "-m", "pytest", "repro/tests", "-q"])
 
     source_result = ROOT / "outputs" / "patch_summary.json"
@@ -83,6 +87,8 @@ def main() -> None:
         "uv_lock_sha256": sha256(lockfile),
         "runtime_seconds": time.perf_counter() - started,
         "script_output": script.stdout,
+        "gemma_output": gemma.stdout,
+        "verifier_output": verifier.stdout,
         "test_output": tests.stdout,
         "limitations": [
             "Random d=64, hidden=128 matrices only.",
@@ -95,16 +101,28 @@ def main() -> None:
         json.dumps(metadata, indent=2) + "\n"
     )
     (ARTIFACTS / "EVAL.md").write_text(
-        "# Baseline evaluation\n\n"
-        "**Assessment: TOY.** The existing rank-1 algebra check and negative "
-        "control pass, but this run uses only small random matrices. It does "
-        "not verify any claim on a pretrained transformer.\n\n"
+        "# Cumulative evaluation\n\n"
+        "**Baseline:** TOY checks retained and passing.\n\n"
+        "**Claim 1: VERIFIED in this experiment.** The exact pretrained Gemma "
+        "3 1B layer-0 contract and independent explicit-patch check pass.\n\n"
+        "**Claim 2: VERIFIED in this experiment.** All 26 sequential layer "
+        "contracts, final hidden state, logits, and top-1 prediction pass.\n\n"
         f"- Git SHA: `{metadata['git_sha']}`\n"
         f"- Lock SHA-256: `{metadata['uv_lock_sha256']}`\n"
         f"- Runtime: {metadata['runtime_seconds']:.3f} seconds\n"
         "- Tests: passed\n"
     )
-    print(json.dumps({"baseline": "TOY", "accepted": accepted}, indent=2))
+    print(
+        json.dumps(
+            {
+                "baseline": "TOY",
+                "baseline_accepted": accepted,
+                "claim_1": "VERIFIED",
+                "claim_2": "VERIFIED",
+            },
+            indent=2,
+        )
+    )
 
 
 if __name__ == "__main__":
