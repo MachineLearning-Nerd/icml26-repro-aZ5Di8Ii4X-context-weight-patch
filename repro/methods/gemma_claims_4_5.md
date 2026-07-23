@@ -9,10 +9,12 @@ At every token, a contextual forward pass records the target residual,
 pre-MLP RMSNorm output, down-projection input/output, and layer output for the
 last token. A reduced pass starts from only the last token at the same absolute
 RoPE position. The full 100-token sweep applies each rank-1 matrix through its
-exact low-rank action, avoiding an otherwise prohibitive outer-product
-materialization on CPU. On the first source token in each precision, an
-independent bounded check explicitly constructs `W + delta_W` at layer 0 and
-records its difference from the low-rank action.
+exact target action: contextual gate/up and down-projection activations are
+captured by hooks and consumed at the corresponding reduced-input layer. This
+avoids repeating otherwise prohibitive full-width MLP products on CPU. On the
+first source token in each precision, an independent bounded check explicitly
+constructs `W + delta_W` at layer 0 and records its difference from the target
+action.
 
 The naive route applies the paper's component-wise RMSNorm scale patch. The
 stable route independently solves the Appendix-B scalar root in float64,
@@ -36,3 +38,8 @@ An initial full-materialization attempt was deliberately cancelled after more
 than six minutes without completing one precision token. Projecting that
 method to all 100 tokens exceeded the fixed one-hour CPU job contract. It is
 retained as a performance-bounded route, not mislabeled as completed evidence.
+A second repeated-matvec attempt was also cancelled before its first token
+because it still repeated several full MLP projections at every layer. The
+hooked target-action route is algebraically exact for the conditioned vector,
+but its omission of repeated matrix-rounding effects remains an explicit
+limitation.

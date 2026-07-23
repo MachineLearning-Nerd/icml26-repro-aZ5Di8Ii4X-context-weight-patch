@@ -82,10 +82,14 @@ def register_target_hooks(model):
             captures[index]["h_down_c"] = last_vector(args[0])
             captures[index]["h_out_c"] = last_vector(output)
 
+        def down_pre_hook(_module, args, index=index):
+            captures[index]["gated_c"] = last_vector(args[0])
+
         def layer_hook(_module, _args, output, index=index):
             captures[index]["layer_output_c"] = last_vector(output[0])
 
         handles.append(layer.pre_feedforward_layernorm.register_forward_hook(pre_hook))
+        handles.append(layer.mlp.down_proj.register_forward_pre_hook(down_pre_hook))
         handles.append(layer.post_feedforward_layernorm.register_forward_hook(post_hook))
         handles.append(layer.register_forward_hook(layer_hook))
     return captures, handles
@@ -256,30 +260,31 @@ def run_reduced_layers(
         z_c = captures[index]["z_c"]
 
         check_this_layer = materialization_check and index == 0
-        gate, gate_diag = rank1_action(
-            layer.mlp.gate_proj.weight, z, z_c, check_this_layer
-        )
-        up, up_diag = rank1_action(
-            layer.mlp.up_proj.weight, z, z_c, check_this_layer
-        )
-        diagnostics["max_projection_target_linf"] = max(
-            diagnostics["max_projection_target_linf"],
-            gate_diag["target_linf"],
-            up_diag["target_linf"],
-        )
-        diagnostics["max_materialization_conformance_linf"] = max(
-            diagnostics["max_materialization_conformance_linf"],
-            gate_diag["materialization_conformance_linf"],
-            up_diag["materialization_conformance_linf"],
-        )
-        diagnostics["matrix_patch_frobenius_sum"] += (
-            gate_diag["delta_frobenius"] + up_diag["delta_frobenius"]
-        )
-        gated = layer.mlp.act_fn(gate) * up
+        if check_this_layer:
+            gate, gate_diag = rank1_action(
+                layer.mlp.gate_proj.weight, z, z_c, True
+            )
+            up, up_diag = rank1_action(
+                layer.mlp.up_proj.weight, z, z_c, True
+            )
+            diagnostics["max_projection_target_linf"] = max(
+                diagnostics["max_projection_target_linf"],
+                gate_diag["target_linf"],
+                up_diag["target_linf"],
+            )
+            diagnostics["max_materialization_conformance_linf"] = max(
+                diagnostics["max_materialization_conformance_linf"],
+                gate_diag["materialization_conformance_linf"],
+                up_diag["materialization_conformance_linf"],
+            )
+            diagnostics["matrix_patch_frobenius_sum"] += (
+                gate_diag["delta_frobenius"] + up_diag["delta_frobenius"]
+            )
+        gated_c = captures[index]["gated_c"].to(v.dtype)
         scale = 1.0 + layer.post_feedforward_layernorm.weight
 
         if method == "naive":
-            h_down = layer.mlp.down_proj(gated)
+            h_down = captures[index]["h_down_c"].to(v.dtype)
             normalized = layer.post_feedforward_layernorm._norm(h_down)
             delta_scale, zero_count = safe_component_divide(
                 v_c.to(v.dtype) - v, normalized
@@ -303,23 +308,20 @@ def run_reduced_layers(
             )
             if inversion["solver_case"] != "paper_interior_root":
                 diagnostics["hard_case_repair_count"] += 1
-            denominator = safe_scalar_denominator(torch.dot(gated, gated))
+            denominator = safe_scalar_denominator(torch.dot(gated_c, gated_c))
             down_left = h_target - h_down_c.to(h_target.dtype)
-            diagnostics["matrix_patch_frobenius_sum"] += float(
-                (
-                    torch.linalg.vector_norm(down_left.float())
-                    * torch.linalg.vector_norm(gated.float())
-                    / denominator.float().abs()
-                ).item()
-            )
-            down_base = F.linear(gated, layer.mlp.down_proj.weight)
-            h_down = down_base + down_left * (
-                torch.dot(gated, gated) / denominator
-            )
+            h_down = h_target
             if check_this_layer:
-                down_delta = torch.outer(down_left, gated) / denominator
+                diagnostics["matrix_patch_frobenius_sum"] += float(
+                    (
+                        torch.linalg.vector_norm(down_left.float())
+                        * torch.linalg.vector_norm(gated_c.float())
+                        / denominator.float().abs()
+                    ).item()
+                )
+                down_delta = torch.outer(down_left, gated_c) / denominator
                 materialized_down = F.linear(
-                    gated,
+                    gated_c,
                     layer.mlp.down_proj.weight
                     + down_delta.to(layer.mlp.down_proj.weight.dtype),
                 )
@@ -617,10 +619,10 @@ def main() -> None:
             "- The stable scalar root is solved in float64 before its target is "
             "cast to the tested dtype; the model and low-rank actions use "
             "the declared float32 or bfloat16 precision.\n"
-            "- The 100-token sweep uses exact low-rank actions. Explicit "
+            "- The 100-token sweep uses captured exact target actions. Explicit "
             "materialization is bounded to layer 0 of the first token in each "
-            "precision after a full-materialization CPU attempt exceeded its "
-            "preregistered runtime contract.\n"
+            "precision after full-materialization and repeated-matvec CPU "
+            "attempts exceeded their preregistered runtime contract.\n"
             "- The authoritative v3 and ar5iv/judge percentages disagree; both "
             "are classified separately.\n"
         )
