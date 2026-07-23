@@ -526,6 +526,10 @@ def main() -> None:
             ROOT / "repro" / "methods" / "architecture_claims_3_6.md",
             output_path / "method.md",
         )
+        shutil.copyfile(
+            ROOT / "repro" / "verifiers" / "verify_claims_3_6.py",
+            output_path / "claim_verifier.py",
+        )
         (output_path / "environment.json").write_text(
             json.dumps(
                 {

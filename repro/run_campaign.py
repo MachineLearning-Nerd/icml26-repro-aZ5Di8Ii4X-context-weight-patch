@@ -7,6 +7,7 @@ experiments extend this runner while the OpenResearch run command stays fixed.
 
 from __future__ import annotations
 
+import base64
 import hashlib
 import json
 import os
@@ -58,6 +59,51 @@ def sha256(path: Path) -> str:
         for block in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def emit_durable_evidence() -> None:
+    """Emit text evidence in bounded chunks so it survives remote jobs."""
+    allowed_suffixes = {".csv", ".json", ".md", ".py", ".tsv", ".txt"}
+    evidence_paths = [
+        path
+        for path in sorted(ARTIFACTS.rglob("*"))
+        if path.is_file()
+        and path.suffix in allowed_suffixes
+        and (path.parent.name.startswith("claim_") or path == ARTIFACTS / "EVAL.md")
+    ]
+    for path in evidence_paths:
+        payload = base64.b64encode(path.read_bytes()).decode("ascii")
+        relative = path.relative_to(ROOT).as_posix()
+        print(
+            "ARTIFACT_BEGIN="
+            + json.dumps(
+                {
+                    "path": relative,
+                    "sha256": sha256(path),
+                    "bytes": path.stat().st_size,
+                    "encoding": "base64",
+                },
+                sort_keys=True,
+            ),
+            flush=True,
+        )
+        for index, offset in enumerate(range(0, len(payload), 12_000)):
+            print(
+                "ARTIFACT_CHUNK="
+                + json.dumps(
+                    {
+                        "path": relative,
+                        "index": index,
+                        "data": payload[offset : offset + 12_000],
+                    },
+                    sort_keys=True,
+                ),
+                flush=True,
+            )
+        print(
+            "ARTIFACT_END=" + json.dumps({"path": relative}, sort_keys=True),
+            flush=True,
+        )
 
 
 def main() -> None:
@@ -177,6 +223,7 @@ def main() -> None:
             indent=2,
         )
     )
+    emit_durable_evidence()
 
 
 if __name__ == "__main__":

@@ -1,0 +1,57 @@
+{
+  "paper": {
+    "float32_agreement": 100.0,
+    "bfloat16_naive_agreement": 87.5,
+    "bfloat16_stable_judged_agreement": 98.0,
+    "bfloat16_stable_arxiv_v3_agreement": 100.0
+  },
+  "observed": {
+    "float32_agreement": 100.0,
+    "bfloat16_naive_agreement": 100.0,
+    "bfloat16_stable_agreement": 100.0,
+    "float32_logit_linf": 2.6702880859375e-05,
+    "bfloat16_naive_logit_linf": 0.375,
+    "bfloat16_stable_logit_linf": 0.25,
+    "explicit_action_logit_linf": 0.125
+  },
+  "gemma": {
+    "layer0_output_linf": 7.62939453125e-06,
+    "max_26_layer_output_linf": 6.103515625e-05,
+    "final_logit_linf": 2.47955322265625e-05,
+    "unpatched_final_logit_linf": 23.490646362304688
+  },
+  "architectures": {
+    "falcon": {"max_block_linf": 3.1086244689504383e-15, "min_negative_linf": 4.091164029582885},
+    "gemma": {"max_block_linf": 3.9968028886505635e-15, "min_negative_linf": 3.6050010585394254},
+    "gpt2": {"max_block_linf": 4.440892098500626e-15, "min_negative_linf": 3.633338677189962},
+    "gptj": {"max_block_linf": 1.7763568394002505e-15, "min_negative_linf": 2.4963252329265053},
+    "llama": {"max_block_linf": 2.6645352591003757e-15, "min_negative_linf": 3.6050010585394254},
+    "mistral": {"max_block_linf": 2.6645352591003757e-15, "min_negative_linf": 3.6050010585394254},
+    "mixtral": {"max_block_linf": 2.55351295663786e-15, "min_negative_linf": 3.90132591424009},
+    "qwen": {"max_block_linf": 2.6645352591003757e-15, "min_negative_linf": 3.6050010585394254}
+  },
+  "explicit_materialization": {
+    "tokens": 10,
+    "matches": 10,
+    "max_action_to_explicit_linf": 0.125,
+    "max_contextual_to_explicit_linf": 0.125,
+    "max_gate_target_linf": 0.046875,
+    "max_up_target_linf": 0.0625,
+    "max_down_target_linf": 0.125,
+    "min_unpatched_linf": 18.703125
+  },
+  "formal_runs": [
+    {"label": "Toy baseline", "seconds": 15, "status": "done"},
+    {"label": "Gemma full model", "seconds": 90, "status": "done"},
+    {"label": "Gemma local download", "seconds": 523, "status": "cancelled"},
+    {"label": "Missing uv image", "seconds": 10, "status": "failed"},
+    {"label": "Gemma code typo", "seconds": 90, "status": "failed"},
+    {"label": "Stable root gap", "seconds": 159, "status": "failed"},
+    {"label": "Explicit full route", "seconds": 372, "status": "cancelled"},
+    {"label": "Repeated matvec route", "seconds": 334, "status": "cancelled"},
+    {"label": "Unbatched precision", "seconds": 3720, "status": "cancelled"},
+    {"label": "Batched precision", "seconds": 3425, "status": "done"},
+    {"label": "Architecture cumulative", "seconds": 5160, "status": "done"},
+    {"label": "Explicit audit", "seconds": 1389, "status": "done"}
+  ]
+}
