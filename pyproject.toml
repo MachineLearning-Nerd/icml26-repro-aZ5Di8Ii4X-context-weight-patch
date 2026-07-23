@@ -1,0 +1,24 @@
+[project]
+name = "context-weight-patch-reproduction"
+version = "0.1.0"
+description = "Reproduction of arXiv 2511.17864"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "huggingface-hub>=0.34,<2",
+  "marimo>=0.14,<1",
+  "matplotlib>=3.10,<4",
+  "numpy>=2.2,<3",
+  "pandas>=2.3,<4",
+  "protobuf>=6,<7",
+  "psutil>=7,<8",
+  "pytest>=8.4,<10",
+  "safetensors>=0.5,<1",
+  "scipy>=1.15,<2",
+  "sentencepiece>=0.2,<1",
+  "torch>=2.7,<3",
+  "transformers>=4.53,<5",
+]
+
+[tool.uv]
+package = false
+
