@@ -81,6 +81,18 @@ def main() -> None:
     architecture_verifier = run_checked(
         [sys.executable, "repro/verifiers/verify_claims_3_6.py"]
     )
+    explicit_materialization = run_checked(
+        [
+            sys.executable,
+            "repro/src/run_explicit_materialization_claims_4_5.py",
+        ]
+    )
+    explicit_materialization_verifier = run_checked(
+        [
+            sys.executable,
+            "repro/verifiers/verify_explicit_materialization_claims_4_5.py",
+        ]
+    )
     tests = run_checked([sys.executable, "-m", "pytest", "repro/tests", "-q"])
 
     source_result = ROOT / "outputs" / "patch_summary.json"
@@ -113,6 +125,9 @@ def main() -> None:
         "precision_verifier_output": precision_verifier.stdout,
         "architecture_output": architectures.stdout,
         "architecture_verifier_output": architecture_verifier.stdout,
+        "explicit_materialization_output": explicit_materialization.stdout,
+        "explicit_materialization_verifier_output":
+            explicit_materialization_verifier.stdout,
         "test_output": tests.stdout,
         "limitations": [
             "Random d=64, hidden=128 matrices only.",
