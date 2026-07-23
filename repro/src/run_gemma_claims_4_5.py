@@ -67,7 +67,7 @@ def git_sha() -> str:
 
 
 def last_vector(value: torch.Tensor) -> torch.Tensor:
-    return value.detach()[0, -1].clone()
+    return value.detach()[:, -1].clone()
 
 
 def register_target_hooks(model):
@@ -254,7 +254,7 @@ def run_reduced_layers(
             cache_position=position_id[0],
         )
         attention_output = layer.post_attention_layernorm(attention_output)
-        v = (residual + attention_output)[0, -1]
+        v = (residual + attention_output)[:, -1]
         z = layer.pre_feedforward_layernorm(v)
         v_c = captures[index]["v_c"]
         z_c = captures[index]["z_c"]
@@ -262,10 +262,10 @@ def run_reduced_layers(
         check_this_layer = materialization_check and index == 0
         if check_this_layer:
             gate, gate_diag = rank1_action(
-                layer.mlp.gate_proj.weight, z, z_c, True
+                layer.mlp.gate_proj.weight, z[0], z_c[0], True
             )
             up, up_diag = rank1_action(
-                layer.mlp.up_proj.weight, z, z_c, True
+                layer.mlp.up_proj.weight, z[0], z_c[0], True
             )
             diagnostics["max_projection_target_linf"] = max(
                 diagnostics["max_projection_target_linf"],
@@ -296,32 +296,42 @@ def run_reduced_layers(
                 - v
                 + captures[index]["h_out_c"].to(v.dtype)
             )
-            requested_rms = float(
-                torch.sqrt(torch.mean(h_down_c.double().square())).item()
-            )
-            h_target, inversion = invert_rmsnorm(
-                goal, scale, requested_rms
-            )
-            diagnostics["max_inversion_constraint_error"] = max(
-                diagnostics["max_inversion_constraint_error"],
-                inversion["constraint_error"],
-            )
-            if inversion["solver_case"] != "paper_interior_root":
-                diagnostics["hard_case_repair_count"] += 1
-            denominator = safe_scalar_denominator(torch.dot(gated_c, gated_c))
+            targets = []
+            for batch_index in range(goal.shape[0]):
+                requested_rms = float(
+                    torch.sqrt(
+                        torch.mean(h_down_c[batch_index].double().square())
+                    ).item()
+                )
+                target, inversion = invert_rmsnorm(
+                    goal[batch_index], scale, requested_rms
+                )
+                targets.append(target)
+                diagnostics["max_inversion_constraint_error"] = max(
+                    diagnostics["max_inversion_constraint_error"],
+                    inversion["constraint_error"],
+                )
+                if inversion["solver_case"] != "paper_interior_root":
+                    diagnostics["hard_case_repair_count"] += 1
+            h_target = torch.stack(targets)
             down_left = h_target - h_down_c.to(h_target.dtype)
             h_down = h_target
             if check_this_layer:
+                denominator = safe_scalar_denominator(
+                    torch.dot(gated_c[0], gated_c[0])
+                )
                 diagnostics["matrix_patch_frobenius_sum"] += float(
                     (
-                        torch.linalg.vector_norm(down_left.float())
-                        * torch.linalg.vector_norm(gated_c.float())
+                        torch.linalg.vector_norm(down_left[0].float())
+                        * torch.linalg.vector_norm(gated_c[0].float())
                         / denominator.float().abs()
                     ).item()
                 )
-                down_delta = torch.outer(down_left, gated_c) / denominator
+                down_delta = torch.outer(
+                    down_left[0], gated_c[0]
+                ) / denominator
                 materialized_down = F.linear(
-                    gated_c,
+                    gated_c[0],
                     layer.mlp.down_proj.weight
                     + down_delta.to(layer.mlp.down_proj.weight.dtype),
                 )
@@ -329,7 +339,9 @@ def run_reduced_layers(
                     diagnostics["max_materialization_conformance_linf"],
                     float(
                         torch.max(
-                            torch.abs(h_down.float() - materialized_down.float())
+                            torch.abs(
+                                h_down[0].float() - materialized_down.float()
+                            )
                         ).item()
                     ),
                 )
@@ -347,91 +359,157 @@ def run_reduced_layers(
             float(torch.max(torch.abs(delta_scale.float())).item()),
         )
         patched = v + (scale + delta_scale) * normalized
-        hidden = patched.view(1, 1, -1)
+        hidden = patched[:, None, :]
 
     final_hidden = model.model.norm(hidden)
-    logits = model.lm_head(final_hidden)[0, -1].float()
+    logits = model.lm_head(final_hidden)[:, -1].float()
     return logits, diagnostics
 
 
 def run_precision(model, tokenizer, dtype_name: str) -> tuple[list[dict], list[float]]:
     rows = []
     negative_controls = []
-    for prompt_index, prompt in enumerate(PROMPTS):
-        history = tokenizer(
-            prompt, return_tensors="pt", add_special_tokens=True
-        ).input_ids
-        for step in range(TOKENS_PER_PROMPT):
-            captures, handles = register_target_hooks(model)
-            with torch.inference_mode():
-                contextual = model(input_ids=history, use_cache=False)
-            for handle in handles:
-                handle.remove()
-            baseline_logits = contextual.logits[0, -1].float()
-            baseline_token = int(torch.argmax(baseline_logits).item())
-            reduced_ids = history[:, -1:]
-            position_id = torch.tensor(
-                [[history.shape[1] - 1]], dtype=torch.long
-            )
+    tokenizer.padding_side = "left"
+    encoded = tokenizer(PROMPTS, add_special_tokens=True)["input_ids"]
+    histories = [torch.tensor(ids, dtype=torch.long) for ids in encoded]
+    stable_enabled = dtype_name == "bfloat16"
 
-            with torch.inference_mode():
-                naive_logits, naive_diag = run_reduced_layers(
-                    model,
-                    captures,
-                    reduced_ids,
-                    position_id,
-                    "naive",
-                    prompt_index == 0 and step == 0,
-                )
+    for step in range(TOKENS_PER_PROMPT):
+        padded = tokenizer.pad(
+            {"input_ids": [history.tolist() for history in histories]},
+            padding=True,
+            return_tensors="pt",
+        )
+        attention_mask = padded["attention_mask"]
+        contextual_positions = attention_mask.long().cumsum(-1) - 1
+        contextual_positions.masked_fill_(attention_mask == 0, 0)
+        captures, handles = register_target_hooks(model)
+        with torch.inference_mode():
+            contextual = model(
+                input_ids=padded["input_ids"],
+                attention_mask=attention_mask,
+                position_ids=contextual_positions,
+                use_cache=False,
+            )
+        for handle in handles:
+            handle.remove()
+        baseline_logits = contextual.logits[:, -1].float()
+        baseline_tokens = torch.argmax(baseline_logits, dim=-1)
+        reduced_ids = torch.stack([history[-1:] for history in histories])
+        position_id = torch.tensor(
+            [[history.shape[0] - 1] for history in histories],
+            dtype=torch.long,
+        )
+
+        with torch.inference_mode():
+            naive_logits, naive_diag = run_reduced_layers(
+                model,
+                captures,
+                reduced_ids,
+                position_id,
+                "naive",
+                step == 0,
+            )
+            if stable_enabled:
                 stable_logits, stable_diag = run_reduced_layers(
                     model,
                     captures,
                     reduced_ids,
                     position_id,
                     "stable",
-                    prompt_index == 0 and step == 0,
+                    step == 0,
                 )
-                if step == 0:
-                    unpatched = model(
-                        input_ids=reduced_ids,
-                        position_ids=position_id,
-                        use_cache=False,
-                    ).logits[0, -1].float()
-                    negative_controls.append(
-                        float(
-                            torch.max(
-                                torch.abs(unpatched - baseline_logits)
-                            ).item()
-                        )
-                    )
+            else:
+                stable_logits = None
+                stable_diag = {
+                    "max_projection_target_linf": 0.0,
+                    "max_inversion_constraint_error": 0.0,
+                    "division_by_zero_count": 0,
+                    "max_abs_scale_patch": 0.0,
+                    "matrix_patch_frobenius_sum": 0.0,
+                    "hard_case_repair_count": 0,
+                    "max_materialization_conformance_linf": 0.0,
+                }
+            if step == 0:
+                unpatched = model(
+                    input_ids=reduced_ids,
+                    position_ids=position_id,
+                    use_cache=False,
+                ).logits[:, -1].float()
+                negative_controls.extend(
+                    float(value)
+                    for value in torch.max(
+                        torch.abs(unpatched - baseline_logits), dim=-1
+                    ).values.tolist()
+                )
 
-            baseline_probability = torch.softmax(baseline_logits, dim=-1)
-            naive_probability = torch.softmax(naive_logits, dim=-1)
-            stable_probability = torch.softmax(stable_logits, dim=-1)
+        baseline_probability = torch.softmax(baseline_logits, dim=-1)
+        naive_probability = torch.softmax(naive_logits, dim=-1)
+        stable_probability = (
+            torch.softmax(stable_logits, dim=-1)
+            if stable_logits is not None
+            else None
+        )
+        step_rows = []
+        for prompt_index in range(len(PROMPTS)):
+            baseline_token = int(baseline_tokens[prompt_index].item())
+            naive_logit = naive_logits[prompt_index]
+            baseline_logit = baseline_logits[prompt_index]
+            stable_logit = (
+                stable_logits[prompt_index]
+                if stable_logits is not None
+                else None
+            )
             row = {
                 "precision": dtype_name,
                 "prompt_index": prompt_index,
                 "step": step,
-                "absolute_position": int(position_id.item()),
+                "absolute_position": int(position_id[prompt_index].item()),
                 "baseline_token_id": baseline_token,
                 "baseline_token": tokenizer.decode([baseline_token]),
-                "naive_token_id": int(torch.argmax(naive_logits).item()),
-                "stable_token_id": int(torch.argmax(stable_logits).item()),
-                "naive_logit_linf": float(
-                    torch.max(torch.abs(naive_logits - baseline_logits)).item()
+                "naive_token_id": int(torch.argmax(naive_logit).item()),
+                "stable_token_id": (
+                    int(torch.argmax(stable_logit).item())
+                    if stable_logit is not None
+                    else None
                 ),
-                "stable_logit_linf": float(
-                    torch.max(torch.abs(stable_logits - baseline_logits)).item()
+                "naive_logit_linf": float(
+                    torch.max(torch.abs(naive_logit - baseline_logit)).item()
+                ),
+                "stable_logit_linf": (
+                    float(
+                        torch.max(
+                            torch.abs(stable_logit - baseline_logit)
+                        ).item()
+                    )
+                    if stable_logit is not None
+                    else None
                 ),
                 "naive_tvd": float(
-                    (0.5 * torch.sum(torch.abs(
-                        naive_probability - baseline_probability
-                    ))).item()
+                    (
+                        0.5
+                        * torch.sum(
+                            torch.abs(
+                                naive_probability[prompt_index]
+                                - baseline_probability[prompt_index]
+                            )
+                        )
+                    ).item()
                 ),
-                "stable_tvd": float(
-                    (0.5 * torch.sum(torch.abs(
-                        stable_probability - baseline_probability
-                    ))).item()
+                "stable_tvd": (
+                    float(
+                        (
+                            0.5
+                            * torch.sum(
+                                torch.abs(
+                                    stable_probability[prompt_index]
+                                    - baseline_probability[prompt_index]
+                                )
+                            )
+                        ).item()
+                    )
+                    if stable_probability is not None
+                    else None
                 ),
                 "naive_max_projection_target_linf": naive_diag[
                     "max_projection_target_linf"
@@ -469,25 +547,40 @@ def run_precision(model, tokenizer, dtype_name: str) -> tuple[list[dict], list[f
                 ),
             }
             rows.append(row)
-            print(
-                "PRECISION_PROGRESS="
-                + json.dumps(
-                    {
-                        "precision": dtype_name,
-                        "prompt": prompt_index,
-                        "step": step,
-                        "baseline": baseline_token,
-                        "naive": row["naive_token_id"],
-                        "stable": row["stable_token_id"],
-                        "naive_linf": row["naive_logit_linf"],
-                        "stable_linf": row["stable_logit_linf"],
-                    },
-                    sort_keys=True,
-                ),
-                flush=True,
+            step_rows.append(row)
+        print(
+            "PRECISION_PROGRESS="
+            + json.dumps(
+                {
+                    "precision": dtype_name,
+                    "step": step,
+                    "baseline": [
+                        row["baseline_token_id"] for row in step_rows
+                    ],
+                    "naive": [row["naive_token_id"] for row in step_rows],
+                    "stable": [row["stable_token_id"] for row in step_rows],
+                    "naive_max_linf": max(
+                        row["naive_logit_linf"] for row in step_rows
+                    ),
+                    "stable_max_linf": (
+                        max(row["stable_logit_linf"] for row in step_rows)
+                        if stable_enabled
+                        else None
+                    ),
+                },
+                sort_keys=True,
+            ),
+            flush=True,
+        )
+        histories = [
+            torch.cat(
+                [
+                    history,
+                    torch.tensor([int(token.item())], dtype=torch.long),
+                ]
             )
-            next_token = torch.tensor([[baseline_token]], dtype=torch.long)
-            history = torch.cat([history, next_token], dim=1)
+            for history, token in zip(histories, baseline_tokens, strict=True)
+        ]
     return rows, negative_controls
 
 
@@ -571,8 +664,11 @@ def main() -> None:
 
     summary = {
         f"{precision}_{method}": aggregate(rows, precision, method)
-        for precision in ("float32", "bfloat16")
-        for method in ("naive", "stable")
+        for precision, method in (
+            ("float32", "naive"),
+            ("bfloat16", "naive"),
+            ("bfloat16", "stable"),
+        )
     }
     environment = {
         "command": "uv run --frozen python repro/run_campaign.py",

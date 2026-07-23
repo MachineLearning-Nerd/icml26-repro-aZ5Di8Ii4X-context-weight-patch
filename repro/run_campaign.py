@@ -23,16 +23,24 @@ BASELINE = ARTIFACTS / "baseline"
 
 
 def run_checked(command: list[str]) -> subprocess.CompletedProcess[str]:
-    completed = subprocess.run(
+    print(f"$ {' '.join(command)}", flush=True)
+    process = subprocess.Popen(
         command,
         cwd=ROOT,
-        check=False,
         text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
+        bufsize=1,
     )
-    print(f"$ {' '.join(command)}", flush=True)
-    print(completed.stdout, end="", flush=True)
+    output = []
+    assert process.stdout is not None
+    for line in process.stdout:
+        output.append(line)
+        print(line, end="", flush=True)
+    returncode = process.wait()
+    completed = subprocess.CompletedProcess(
+        command, returncode, "".join(output), None
+    )
     if completed.returncode:
         raise SystemExit(completed.returncode)
     return completed

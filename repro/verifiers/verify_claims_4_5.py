@@ -31,7 +31,8 @@ def main() -> None:
         precision_rows = [row for row in rows if row["precision"] == precision]
         require(len(precision_rows) == 100,
                 f"{precision} does not contain 100 rows")
-        for method in ("naive", "stable"):
+        methods = ("naive",) if precision == "float32" else ("naive", "stable")
+        for method in methods:
             key = f"{precision}_{method}"
             matches = [
                 row["baseline_token_id"] == row[f"{method}_token_id"]

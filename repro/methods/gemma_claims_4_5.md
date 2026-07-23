@@ -3,7 +3,10 @@
 The experiment loads the full pretrained 26-layer Gemma 3 1B instruction-tuned
 checkpoint twice: once as float32 and once as bfloat16. For each precision and
 each of the five source prompts it greedily generates exactly 20 baseline
-tokens.
+tokens. The five prompts are left-padded and evaluated as one batch at each
+generation step, with explicit per-example position IDs. Only the three
+claim-bearing combinations are run: float32-naive, bfloat16-naive, and
+bfloat16-stable.
 
 At every token, a contextual forward pass records the target residual,
 pre-MLP RMSNorm output, down-projection input/output, and layer output for the
@@ -43,3 +46,9 @@ because it still repeated several full MLP projections at every layer. The
 hooked target-action route is algebraically exact for the conditioned vector,
 but its omission of repeated matrix-rounding effects remains an explicit
 limitation.
+
+The parent branch's unbatched target-action run exceeded its declared one-hour
+CPU contract and was cancelled. Batching preserves every prompt/token decision
+while amortizing each layer traversal across the five source prompts. The
+fixed campaign runner streams subprocess output in this child so progress and
+partial failures are observable.
