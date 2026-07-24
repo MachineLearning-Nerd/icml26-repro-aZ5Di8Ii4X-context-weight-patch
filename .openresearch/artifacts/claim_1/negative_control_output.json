@@ -1,0 +1,5 @@
+{
+  "omit_scale_patch_linf_layer_0": 91.58027648925781,
+  "unpatched_final_logit_linf": 23.490646362304688,
+  "expected": "Both mismatches must exceed their preregistered minima."
+}

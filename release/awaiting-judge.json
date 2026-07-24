@@ -1,0 +1,11 @@
+{
+  "state": "AWAITING_JUDGE_REEVALUATION",
+  "current_live_score": "2/12",
+  "judged_space_revision": "e85dfc7775923513936705737b393955303db5f4",
+  "published_space_revision": "e2cc20512271c1bbbe2ee41865137c84af0c693f",
+  "published_text_paths": 81,
+  "upload_manifest_sha256": "c341e9f1026e7af37c09747d1dd2c172e5f05b12dd08cba6202912247557df07",
+  "winning_experiment_branch": "orx/release-candidate-evidence-and-public-report",
+  "winning_experiment_sha": "362a0a1f8c8d2d1099b8efe11022888816837654",
+  "final_run": "c73d8345-e83b-457b-872a-b4dc368cb2f7"
+}

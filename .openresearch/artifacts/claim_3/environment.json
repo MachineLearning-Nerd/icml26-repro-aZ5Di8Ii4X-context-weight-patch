@@ -1,0 +1,23 @@
+{
+  "command": "uv run --frozen python repro/run_campaign.py",
+  "git_sha": "362a0a1f8c8d2d1099b8efe11022888816837654",
+  "uv_lock_sha256": "b53e0b2a191fa07534677470c9816c8d8164da5d72df922a410267307a86a140",
+  "transformers_version": "4.57.6",
+  "torch_version": "2.13.0+cu130",
+  "python_platform": "Linux-6.12.90-120.164.amzn2023.x86_64-x86_64-with-glibc2.36",
+  "cpu": {
+    "logical_count": 64,
+    "physical_count": 32,
+    "torch_threads": 32,
+    "memory_bytes": 529681854464,
+    "processor": ""
+  },
+  "seeds": [
+    20260723,
+    20260724,
+    20260725,
+    20260726,
+    20260727
+  ],
+  "runtime_seconds": 27.154529043938965
+}

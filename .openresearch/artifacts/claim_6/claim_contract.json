@@ -1,0 +1,26 @@
+{
+  "claim": 6,
+  "paper_anchor": "Table 1 (tab:results), Section 5 and Appendix general proofs",
+  "source_revision": "arXiv:2511.17864v3",
+  "statement": "The rank-one controllability derivation covers Gemma, Llama, Falcon, Mistral/Mixtral, Qwen, GPT-2, GPT-J, and mixture-of-experts architectural forms.",
+  "scope": "Architectural/algebraic coverage, not a claim that every named pretrained checkpoint was empirically evaluated.",
+  "acceptance": {
+    "required_families": [
+      "gemma",
+      "llama",
+      "falcon",
+      "mistral",
+      "mixtral",
+      "qwen",
+      "gpt2",
+      "gptj",
+      "moe"
+    ],
+    "requires_actual_transformers_classes": true,
+    "requires_class_source_sha256": true,
+    "requires_sequential_moe_and_parallel_routes": true,
+    "maximum_float64_linf": 1e-10,
+    "minimum_negative_control_linf": 1e-4
+  },
+  "verdict_rule": "VERIFIED only when every named architectural family is mapped to an actual Transformers implementation and its claimed construction passes; a missing or proxy-only family is BLOCKED."
+}

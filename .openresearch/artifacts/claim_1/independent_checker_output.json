@@ -1,0 +1,67 @@
+{
+  "independent_checker": "repro/verifiers/verify_claims_1_2.py",
+  "claim_1": "VERIFIED",
+  "claim_2": "VERIFIED",
+  "checks": [
+    {
+      "check": "C1 gate projection",
+      "passed": true
+    },
+    {
+      "check": "C1 up projection",
+      "passed": true
+    },
+    {
+      "check": "C1 explicit gate patch",
+      "passed": true
+    },
+    {
+      "check": "C1 explicit up patch",
+      "passed": true
+    },
+    {
+      "check": "C1 block output",
+      "passed": true
+    },
+    {
+      "check": "C1 target reconstruction",
+      "passed": true
+    },
+    {
+      "check": "C1 nonzero activation assumption",
+      "passed": true
+    },
+    {
+      "check": "C1 omission negative control",
+      "passed": true
+    },
+    {
+      "check": "C2 layer count",
+      "passed": true
+    },
+    {
+      "check": "C2 all layer outputs",
+      "passed": true
+    },
+    {
+      "check": "C2 final hidden",
+      "passed": true
+    },
+    {
+      "check": "C2 final logits",
+      "passed": true
+    },
+    {
+      "check": "C2 top-1 agreement",
+      "passed": true
+    },
+    {
+      "check": "C2 unpatched negative control",
+      "passed": true
+    },
+    {
+      "check": "C2 assumptions at every layer",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "claim_3": "VERIFIED",
+  "claim_6": "VERIFIED",
+  "architectures": [
+    "falcon",
+    "gemma",
+    "gpt2",
+    "gptj",
+    "llama",
+    "mistral",
+    "mixtral",
+    "qwen"
+  ],
+  "moe_covered": true,
+  "seeds_per_route": 5,
+  "max_block_linf": 4.440892098500626e-15,
+  "max_input_projection_linf": 3.3306690738754696e-15,
+  "min_negative_control_linf": 2.4963252329265053,
+  "independent_numpy_max_linf": 7.105427357601002e-15,
+  "zero_assumption_control": {
+    "rejected": true,
+    "message": "input violates the theorem's nonzero assumption"
+  },
+  "checks": "all contract, topology, assumption and control gates passed",
+  "limitation": "Non-Gemma dynamic modules use reduced widths and deterministic random weights; the result is architecture-level conformance."
+}

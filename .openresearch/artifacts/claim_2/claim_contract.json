@@ -1,0 +1,30 @@
+{
+  "claim_id": 2,
+  "paper_anchor": "arXiv:2511.17864v3, Theorem 2 and Algorithm 1, Sections 3.2-3.3, labels thm:multilayer and alg:multilayer",
+  "statement": "Applying the single-block construction sequentially across all L Gemma-style blocks reproduces the full-context network output for the tested token.",
+  "assumptions": [
+    "Theorem 1 assumptions hold at every patched layer.",
+    "Each layer patch is recomputed from that layer's actual reduced-path input.",
+    "The target is one token/history; the patches are not claimed to be reusable globally."
+  ],
+  "test_domain": {
+    "model": "unsloth/gemma-3-1b-it",
+    "revision": "5b11413a10db4e486ef16a20101fd028f8f2499c",
+    "layers": 26,
+    "hidden_size": 1152,
+    "intermediate_size": 6912,
+    "dtype": "float32",
+    "device": "cpu"
+  },
+  "acceptance": {
+    "layers_required": 26,
+    "per_layer_output_linf_max": 0.002,
+    "final_hidden_linf_max": 0.002,
+    "final_logit_linf_max": 0.1,
+    "requires_top1_agreement": true,
+    "negative_unpatched_logit_linf_min": 0.1,
+    "requires_all_nonzero": true
+  },
+  "verdict_rule": "VERIFIED only if all 26 layer contracts and the final-logit contract pass; otherwise BLOCKED unless an assumption-satisfying counterexample contradicts the exact theorem."
+}
+

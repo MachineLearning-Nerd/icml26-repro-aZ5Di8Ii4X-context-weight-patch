@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "title": "Repro - Context = Rank-1 Weight Patches",
+  "emoji": "🎯",
+  "space_id": "DineshAI/aZ5Di8Ii4X",
+  "paper": {
+    "arxiv_id": "2511.17864",
+    "openreview_id": "aZ5Di8Ii4X"
+  },
+  "tags": [
+    "icml2026-repro",
+    "paper-aZ5Di8Ii4X"
+  ],
+  "updated_at": "2026-07-23T20:47:22+00:00",
+  "root": {
+    "slug": "index",
+    "title": "Repro - Context = Rank-1 Weight Patches",
+    "file": "pages/index.md",
+    "children": [
+      {
+        "slug": "claim-1-rank-1-patches-exact",
+        "title": "Claim 1 — rank-1 patches exact",
+        "file": "pages/claim-1-rank-1-patches-exact/page.md",
+        "children": []
+      },
+      {
+        "slug": "claim-2-controllability-conditions",
+        "title": "Claim 2 — controllability conditions",
+        "file": "pages/claim-2-controllability-conditions/page.md",
+        "children": []
+      },
+      {
+        "slug": "methods-environment",
+        "title": "Methods & environment",
+        "file": "pages/methods-environment/page.md",
+        "children": []
+      },
+      {
+        "slug": "negative-controls-falsification",
+        "title": "Negative controls & falsification",
+        "file": "pages/negative-controls-falsification/page.md",
+        "children": []
+      },
+      {
+        "slug": "conclusion",
+        "title": "Conclusion",
+        "file": "pages/conclusion/page.md",
+        "children": []
+      },
+      {
+        "slug": "campaign-2026-07-24",
+        "title": "2026-07-24 cumulative campaign",
+        "file": "pages/campaign-2026-07-24/page.md",
+        "children": []
+      },
+      {
+        "slug": "claim-1-full-gemma",
+        "title": "Claim 1 — full Gemma block",
+        "file": "pages/claim-1-full-gemma/page.md",
+        "children": []
+      },
+      {
+        "slug": "claim-2-full-network",
+        "title": "Claim 2 — 26-layer induction",
+        "file": "pages/claim-2-full-network/page.md",
+        "children": []
+      },
+      {
+        "slug": "claim-3-real-components",
+        "title": "Claim 3 — controllability on real classes",
+        "file": "pages/claim-3-real-components/page.md",
+        "children": []
+      },
+      {
+        "slug": "claim-4-precision",
+        "title": "Claim 4 — float32 versus bfloat16",
+        "file": "pages/claim-4-precision/page.md",
+        "children": []
+      },
+      {
+        "slug": "claim-5-stable-inversion",
+        "title": "Claim 5 — stable inversion",
+        "file": "pages/claim-5-stable-inversion/page.md",
+        "children": []
+      },
+      {
+        "slug": "claim-6-architectures",
+        "title": "Claim 6 — named architectures",
+        "file": "pages/claim-6-architectures/page.md",
+        "children": []
+      },
+      {
+        "slug": "source-audit-limitations",
+        "title": "Source audit & limitations",
+        "file": "pages/source-audit-limitations/page.md",
+        "children": []
+      }
+    ]
+  },
+  "agent_view_tokens": 5200,
+  "revision": "1784839651575640000"
+}

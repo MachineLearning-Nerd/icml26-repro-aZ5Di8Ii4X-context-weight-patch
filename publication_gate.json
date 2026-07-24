@@ -1,0 +1,15 @@
+{
+  "paper": "aZ5Di8Ii4X",
+  "arxiv": "2511.17864",
+  "publication_status": "awaiting_judge",
+  "published_space": "DineshAI/aZ5Di8Ii4X",
+  "published_hf_revision": "e2cc20512271c1bbbe2ee41865137c84af0c693f",
+  "live_judged_score": "2/12",
+  "conservative_projected_score": "6-12/12",
+  "claims_verified": 4,
+  "claims_falsified": 2,
+  "claims_blocked": 0,
+  "claims_total": 6,
+  "tests_passed": true,
+  "publication_gate_passed": true
+}

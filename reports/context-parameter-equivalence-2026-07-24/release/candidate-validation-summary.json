@@ -1,0 +1,21 @@
+{
+  "upload_paths": 81,
+  "upload_bytes": 583844,
+  "all_text_utf8": true,
+  "subset": {
+    "judged_revision": "e85dfc7775923513936705737b393955303db5f4",
+    "old_path_count": 21,
+    "candidate_contains_all_old_paths": true,
+    "missing_old_paths": [],
+    "byte_identical_old_paths": 20,
+    "intentionally_extended_old_paths": [
+      "logbook.json"
+    ],
+    "original_logbook_preserved_at": "provenance/judged-logbook-e85dfc7775923513936705737b393955303db5f4.json",
+    "original_logbook_sha256_matches": true,
+    "old_pages_unchanged": true
+  },
+  "secret_scan_passed": true,
+  "manifest_sha256": "c341e9f1026e7af37c09747d1dd2c172e5f05b12dd08cba6202912247557df07",
+  "allowlist_sha256": "75cc7e41c8272b6d84c532ef071b48afcc7098bd8207ba03cc5ca5780a9b4474"
+}

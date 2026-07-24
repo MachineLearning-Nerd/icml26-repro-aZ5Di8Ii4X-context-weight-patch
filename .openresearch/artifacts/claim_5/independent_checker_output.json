@@ -1,0 +1,27 @@
+{
+  "claim_4": "FALSIFIED",
+  "claim_5": "FALSIFIED",
+  "float32_naive": {
+    "token_count": 100,
+    "matches": 100,
+    "agreement": 1.0,
+    "max_logit_linf": 2.6702880859375e-05,
+    "max_tvd": 1.632359726499999e-06
+  },
+  "bfloat16_naive": {
+    "token_count": 100,
+    "matches": 100,
+    "agreement": 1.0,
+    "max_logit_linf": 0.375,
+    "max_tvd": 0.029568077996373177
+  },
+  "bfloat16_stable": {
+    "token_count": 100,
+    "matches": 100,
+    "agreement": 1.0,
+    "max_logit_linf": 0.25,
+    "max_tvd": 0.03077096864581108
+  },
+  "max_inversion_constraint_error": 9.43689570931383e-15,
+  "checks": "all evidence-integrity and fidelity gates passed"
+}

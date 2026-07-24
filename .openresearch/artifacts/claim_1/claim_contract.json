@@ -1,0 +1,29 @@
+{
+  "claim_id": 1,
+  "paper_anchor": "arXiv:2511.17864v3, Theorem 1, Section 3.1, label thm:gemma_block",
+  "statement": "For a Gemma-style block, the stated rank-1 gate/up patches and output RMSNorm scale patch reproduce the full-context block output from the reduced-context state.",
+  "assumptions": [
+    "The reduced normalized input z is nonzero.",
+    "Every coordinate of the unscaled post-MLP RMSNorm activation is nonzero.",
+    "The comparison is token-specific and uses the same pretrained block parameters."
+  ],
+  "test_domain": {
+    "model": "unsloth/gemma-3-1b-it",
+    "revision": "5b11413a10db4e486ef16a20101fd028f8f2499c",
+    "weight_blob": "cf8782aa8cd58000ba309c9f5ac84a810c3bf7bf",
+    "official_weight_blob_match": "google/gemma-3-1b-it@dcc83ea841ab6100d6b47a070329e1ba4cf78752",
+    "layer": 0,
+    "dtype": "float32",
+    "device": "cpu"
+  },
+  "acceptance": {
+    "projection_linf_max": 0.00002,
+    "explicit_patch_linf_max": 0.00002,
+    "block_output_linf_max": 0.0002,
+    "reconstruction_linf_max": 0.0002,
+    "negative_omit_scale_linf_min": 0.001,
+    "requires_all_nonzero": true
+  },
+  "verdict_rule": "VERIFIED only if every acceptance predicate passes; otherwise BLOCKED unless an assumption-satisfying counterexample contradicts the exact theorem."
+}
+

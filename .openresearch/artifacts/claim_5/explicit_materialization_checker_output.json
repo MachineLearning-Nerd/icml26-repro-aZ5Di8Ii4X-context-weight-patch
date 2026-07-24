@@ -1,0 +1,13 @@
+{
+  "route_assessment": "CONCORDANT",
+  "rows": 10,
+  "explicit_contextual_token_matches": 10,
+  "action_explicit_token_matches": 10,
+  "max_action_to_explicit_logit_linf": 0.125,
+  "max_baseline_to_explicit_logit_linf": 0.125,
+  "max_gate_target_linf": 0.046875,
+  "max_up_target_linf": 0.0625,
+  "max_down_target_linf": 0.125,
+  "min_negative_unpatched_linf": 18.703125,
+  "scope": "Fidelity audit only; five tokens do not estimate a 100-token agreement percentage."
+}

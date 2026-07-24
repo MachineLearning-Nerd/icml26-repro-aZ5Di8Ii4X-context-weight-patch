@@ -1,0 +1,33 @@
+{
+  "claim": 5,
+  "source": {
+    "judge_interpretation": "ar5iv HTML retrieved 2026-07-23 says 98%",
+    "authoritative_revision": "arXiv:2511.17864v3 says 100%",
+    "section": "Section 4 and Appendix B",
+    "anchors": ["sec:experiments", "app:numerically-stable-update", "app:rms-inversion"]
+  },
+  "statement": "A constrained RMSNorm inversion makes the bfloat16 patch more stable, with token agreement rising from 87.5% to 98% in the judged source rendering (100% in arXiv v3).",
+  "protocol": {
+    "model": "unsloth/gemma-3-1b-it@5b11413a10db4e486ef16a20101fd028f8f2499c",
+    "weight_blob": "cf8782aa8cd58000ba309c9f5ac84a810c3bf7bf",
+    "prompts": 5,
+    "greedy_tokens_per_prompt": 20,
+    "forced_baseline_history_after_mismatch": true,
+    "patches_recomputed_each_token": true,
+    "precision": "bfloat16",
+    "stable_update": "Appendix-B constrained RMSNorm inversion, rank-1 down-projection patch, and scale-vector remainder"
+  },
+  "fidelity_gates": {
+    "evaluated_tokens": 100,
+    "all_five_source_prompts": true,
+    "full_26_layer_model": true,
+    "inversion_constraint_max_abs_error": 1e-06,
+    "negative_control_min_logit_linf": 0.01
+  },
+  "verdict_rule": {
+    "VERIFIED_JUDGED_RENDERING": "All gates pass and stable bfloat16 agreement is exactly 0.98.",
+    "VERIFIED_ARXIV_V3": "All gates pass and stable bfloat16 agreement is exactly 1.0.",
+    "FALSIFIED": "All gates pass and stable bfloat16 agreement is neither 0.98 nor 1.0, or it does not improve over naive bfloat16.",
+    "BLOCKED": "Any fidelity or evidence-integrity gate fails."
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "command": "uv run --frozen python repro/run_campaign.py",
+  "git_sha": "362a0a1f8c8d2d1099b8efe11022888816837654",
+  "uv_lock_sha256": "b53e0b2a191fa07534677470c9816c8d8164da5d72df922a410267307a86a140",
+  "python": "3.12.12",
+  "torch": "2.13.0+cu130",
+  "transformers": "4.57.6",
+  "platform": "Linux-6.12.90-120.164.amzn2023.x86_64-x86_64-with-glibc2.36",
+  "machine": "x86_64",
+  "logical_cpu_count": 64,
+  "gpu_used": false
+}

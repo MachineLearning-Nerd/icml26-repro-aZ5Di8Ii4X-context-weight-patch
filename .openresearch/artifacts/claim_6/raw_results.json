@@ -1,0 +1,851 @@
+{
+  "claims": [
+    3,
+    6
+  ],
+  "command": "uv run --frozen python repro/run_campaign.py",
+  "git_sha": "362a0a1f8c8d2d1099b8efe11022888816837654",
+  "uv_lock_sha256": "b53e0b2a191fa07534677470c9816c8d8164da5d72df922a410267307a86a140",
+  "transformers_version": "4.57.6",
+  "torch_version": "2.13.0+cu130",
+  "python_platform": "Linux-6.12.90-120.164.amzn2023.x86_64-x86_64-with-glibc2.36",
+  "cpu": {
+    "logical_count": 64,
+    "physical_count": 32,
+    "torch_threads": 32,
+    "memory_bytes": 529681854464,
+    "processor": ""
+  },
+  "dtype": "float64",
+  "hidden_size": 256,
+  "intermediate_size": 512,
+  "seeds": [
+    20260723,
+    20260724,
+    20260725,
+    20260726,
+    20260727
+  ],
+  "rows": [
+    {
+      "architecture": "gemma",
+      "route": "sequential_residual",
+      "seed": 20260723,
+      "block_linf": 2.6645352591003757e-15,
+      "input_projection_linf": 2.4424906541753444e-15,
+      "negative_control_linf": 4.086404656484819,
+      "patch_ranks": [
+        1,
+        1,
+        1
+      ],
+      "source_norm": 15.697548894523354,
+      "target_norm": 16.479347696056063,
+      "outer_activation_norm": 5.086739991407945
+    },
+    {
+      "architecture": "gemma",
+      "route": "sequential_residual",
+      "seed": 20260724,
+      "block_linf": 2.220446049250313e-15,
+      "input_projection_linf": 1.3322676295501878e-15,
+      "negative_control_linf": 4.841763141943158,
+      "patch_ranks": [
+        1,
+        1,
+        1
+      ],
+      "source_norm": 15.394422916238318,
+      "target_norm": 15.544134296121735,
+      "outer_activation_norm": 4.601750202614022
+    },
+    {
+      "architecture": "gemma",
+      "route": "sequential_residual",
+      "seed": 20260725,
+      "block_linf": 2.1371793224034263e-15,
+      "input_projection_linf": 1.1102230246251565e-15,
+      "negative_control_linf": 4.009551323251579,
+      "patch_ranks": [
+        1,
+        1,
+        1
+      ],
+      "source_norm": 16.04531539618749,
+      "target_norm": 15.720113207109318,
+      "outer_activation_norm": 4.166581487062175
+    },
+    {
+      "architecture": "gemma",
+      "route": "sequential_residual",
+      "seed": 20260726,
+      "block_linf": 3.9968028886505635e-15,
+      "input_projection_linf": 1.3322676295501878e-15,
+      "negative_control_linf": 4.243977518417806,
+      "patch_ranks": [
+        1,
+        1,
+        1
+      ],
+      "source_norm": 15.67959554684102,
+      "target_norm": 15.894800654994942,
+      "outer_activation_norm": 4.474654718153422
+    },
+    {
+      "architecture": "gemma",
+      "route": "sequential_residual",
+      "seed": 20260727,
+      "block_linf": 1.887379141862766e-15,
+      "input_projection_linf": 1.7763568394002505e-15,
+      "negative_control_linf": 3.6050010585394254,
+      "patch_ranks": [
+        1,
+        1,
+        1
+      ],
+      "source_norm": 15.869367868569185,
+      "target_norm": 16.8361549986738,
+      "outer_activation_norm": 4.717236717369564
+    },
+    {
+      "architecture": "llama",
+      "route": "sequential_residual",
+      "seed": 20260723,
+      "block_linf": 2.6645352591003757e-15,
+      "input_projection_linf": 2.1094237467877974e-15,
+      "negative_control_linf": 4.086404656484818,
+      "patch_ranks": [
+        1,
+        1,
+        1
+      ],
+      "source_norm": 15.697548894523354,
+      "target_norm": 16.479347696056063,
+      "outer_activation_norm": 4.6648597838356505
+    },
+    {
+      "architecture": "llama",
+      "route": "sequential_residual",
+      "seed": 20260724,
+      "block_linf": 2.6645352591003757e-15,
+      "input_projection_linf": 1.3322676295501878e-15,
+      "negative_control_linf": 4.841763141943159,
+      "patch_ranks": [
+        1,
+        1,
+        1
+      ],
+      "source_norm": 15.394422916238318,
+      "target_norm": 15.544134296121735,
+      "outer_activation_norm": 4.221353169164551
+    },
+    {
+      "architecture": "llama",
+      "route": "sequential_residual",
+      "seed": 20260725,
+      "block_linf": 1.9984014443252818e-15,
+      "input_projection_linf": 1.1102230246251565e-15,
+      "negative_control_linf": 4.009551323251579,
+      "patch_ranks": [
+        1,
+        1,
+        1
+      ],
+      "source_norm": 16.04531539618749,
+      "target_norm": 15.720113207109318,
+      "outer_activation_norm": 3.885085954563148
+    },
+    {
+      "architecture": "llama",
+      "route": "sequential_residual",
+      "seed": 20260726,
+      "block_linf": 1.9984014443252818e-15,
+      "input_projection_linf": 1.1657341758564144e-15,
+      "negative_control_linf": 4.243977518417806,
+      "patch_ranks": [
+        1,
+        1,
+        1
+      ],
+      "source_norm": 15.67959554684102,
+      "target_norm": 15.894800654994942,
+      "outer_activation_norm": 4.129163813016025
+    },
+    {
+      "architecture": "llama",
+      "route": "sequential_residual",
+      "seed": 20260727,
+      "block_linf": 2.220446049250313e-15,
+      "input_projection_linf": 1.5543122344752192e-15,
+      "negative_control_linf": 3.6050010585394254,
+      "patch_ranks": [
+        1,
+        1,
+        1
+      ],
+      "source_norm": 15.869367868569185,
+      "target_norm": 16.8361549986738,
+      "outer_activation_norm": 4.353176764372483
+    },
+    {
+      "architecture": "mistral",
+      "route": "sequential_residual",
+      "seed": 20260723,
+      "block_linf": 2.6645352591003757e-15,
+      "input_projection_linf": 2.1094237467877974e-15,
+      "negative_control_linf": 4.086404656484818,
+      "patch_ranks": [
+        1,
+        1,
+        1
+      ],
+      "source_norm": 15.697548894523354,
+      "target_norm": 16.479347696056063,
+      "outer_activation_norm": 4.6648597838356505
+    },
+    {
+      "architecture": "mistral",
+      "route": "sequential_residual",
+      "seed": 20260724,
+      "block_linf": 2.6645352591003757e-15,
+      "input_projection_linf": 1.3322676295501878e-15,
+      "negative_control_linf": 4.841763141943159,
+      "patch_ranks": [
+        1,
+        1,
+        1
+      ],
+      "source_norm": 15.394422916238318,
+      "target_norm": 15.544134296121735,
+      "outer_activation_norm": 4.221353169164551
+    },
+    {
+      "architecture": "mistral",
+      "route": "sequential_residual",
+      "seed": 20260725,
+      "block_linf": 1.9984014443252818e-15,
+      "input_projection_linf": 1.1102230246251565e-15,
+      "negative_control_linf": 4.009551323251579,
+      "patch_ranks": [
+        1,
+        1,
+        1
+      ],
+      "source_norm": 16.04531539618749,
+      "target_norm": 15.720113207109318,
+      "outer_activation_norm": 3.885085954563148
+    },
+    {
+      "architecture": "mistral",
+      "route": "sequential_residual",
+      "seed": 20260726,
+      "block_linf": 1.9984014443252818e-15,
+      "input_projection_linf": 1.1657341758564144e-15,
+      "negative_control_linf": 4.243977518417806,
+      "patch_ranks": [
+        1,
+        1,
+        1
+      ],
+      "source_norm": 15.67959554684102,
+      "target_norm": 15.894800654994942,
+      "outer_activation_norm": 4.129163813016025
+    },
+    {
+      "architecture": "mistral",
+      "route": "sequential_residual",
+      "seed": 20260727,
+      "block_linf": 2.220446049250313e-15,
+      "input_projection_linf": 1.5543122344752192e-15,
+      "negative_control_linf": 3.6050010585394254,
+      "patch_ranks": [
+        1,
+        1,
+        1
+      ],
+      "source_norm": 15.869367868569185,
+      "target_norm": 16.8361549986738,
+      "outer_activation_norm": 4.353176764372483
+    },
+    {
+      "architecture": "qwen",
+      "route": "sequential_residual",
+      "seed": 20260723,
+      "block_linf": 2.6645352591003757e-15,
+      "input_projection_linf": 2.1094237467877974e-15,
+      "negative_control_linf": 4.086404656484818,
+      "patch_ranks": [
+        1,
+        1,
+        1
+      ],
+      "source_norm": 15.697548894523354,
+      "target_norm": 16.479347696056063,
+      "outer_activation_norm": 4.6648597838356505
+    },
+    {
+      "architecture": "qwen",
+      "route": "sequential_residual",
+      "seed": 20260724,
+      "block_linf": 2.6645352591003757e-15,
+      "input_projection_linf": 1.3322676295501878e-15,
+      "negative_control_linf": 4.841763141943159,
+      "patch_ranks": [
+        1,
+        1,
+        1
+      ],
+      "source_norm": 15.394422916238318,
+      "target_norm": 15.544134296121735,
+      "outer_activation_norm": 4.221353169164551
+    },
+    {
+      "architecture": "qwen",
+      "route": "sequential_residual",
+      "seed": 20260725,
+      "block_linf": 1.9984014443252818e-15,
+      "input_projection_linf": 1.1102230246251565e-15,
+      "negative_control_linf": 4.009551323251579,
+      "patch_ranks": [
+        1,
+        1,
+        1
+      ],
+      "source_norm": 16.04531539618749,
+      "target_norm": 15.720113207109318,
+      "outer_activation_norm": 3.885085954563148
+    },
+    {
+      "architecture": "qwen",
+      "route": "sequential_residual",
+      "seed": 20260726,
+      "block_linf": 1.9984014443252818e-15,
+      "input_projection_linf": 1.1657341758564144e-15,
+      "negative_control_linf": 4.243977518417806,
+      "patch_ranks": [
+        1,
+        1,
+        1
+      ],
+      "source_norm": 15.67959554684102,
+      "target_norm": 15.894800654994942,
+      "outer_activation_norm": 4.129163813016025
+    },
+    {
+      "architecture": "qwen",
+      "route": "sequential_residual",
+      "seed": 20260727,
+      "block_linf": 2.220446049250313e-15,
+      "input_projection_linf": 1.5543122344752192e-15,
+      "negative_control_linf": 3.6050010585394254,
+      "patch_ranks": [
+        1,
+        1,
+        1
+      ],
+      "source_norm": 15.869367868569185,
+      "target_norm": 16.8361549986738,
+      "outer_activation_norm": 4.353176764372483
+    },
+    {
+      "architecture": "gpt2",
+      "route": "sequential_residual",
+      "seed": 20260723,
+      "block_linf": 4.440892098500626e-15,
+      "input_projection_linf": 1.7763568394002505e-15,
+      "negative_control_linf": 4.499184151489327,
+      "patch_ranks": [
+        1,
+        1
+      ],
+      "source_norm": 16.733306815451122,
+      "target_norm": 16.438047391407554,
+      "outer_activation_norm": 4.197386458454034
+    },
+    {
+      "architecture": "gpt2",
+      "route": "sequential_residual",
+      "seed": 20260724,
+      "block_linf": 3.4416913763379853e-15,
+      "input_projection_linf": 1.5543122344752192e-15,
+      "negative_control_linf": 3.633338677189962,
+      "patch_ranks": [
+        1,
+        1
+      ],
+      "source_norm": 16.067228229631453,
+      "target_norm": 14.063838621283601,
+      "outer_activation_norm": 3.5584583919196224
+    },
+    {
+      "architecture": "gpt2",
+      "route": "sequential_residual",
+      "seed": 20260725,
+      "block_linf": 4.218847493575595e-15,
+      "input_projection_linf": 1.4988010832439613e-15,
+      "negative_control_linf": 4.232370776316417,
+      "patch_ranks": [
+        1,
+        1
+      ],
+      "source_norm": 15.736779823028238,
+      "target_norm": 14.754413151846705,
+      "outer_activation_norm": 3.451713459006395
+    },
+    {
+      "architecture": "gpt2",
+      "route": "sequential_residual",
+      "seed": 20260726,
+      "block_linf": 4.440892098500626e-15,
+      "input_projection_linf": 1.3322676295501878e-15,
+      "negative_control_linf": 5.2792890585004875,
+      "patch_ranks": [
+        1,
+        1
+      ],
+      "source_norm": 16.354857831534556,
+      "target_norm": 16.181513774964703,
+      "outer_activation_norm": 3.982694885882801
+    },
+    {
+      "architecture": "gpt2",
+      "route": "sequential_residual",
+      "seed": 20260727,
+      "block_linf": 3.774758283725532e-15,
+      "input_projection_linf": 1.2212453270876722e-15,
+      "negative_control_linf": 3.829874660107338,
+      "patch_ranks": [
+        1,
+        1
+      ],
+      "source_norm": 16.882227820884783,
+      "target_norm": 15.699158459425826,
+      "outer_activation_norm": 3.6226396451952407
+    },
+    {
+      "architecture": "falcon",
+      "route": "sequential_residual",
+      "seed": 20260723,
+      "block_linf": 3.1086244689504383e-15,
+      "input_projection_linf": 1.3322676295501878e-15,
+      "negative_control_linf": 4.222233440482588,
+      "patch_ranks": [
+        1,
+        1
+      ],
+      "source_norm": 15.447172166686029,
+      "target_norm": 16.277365767357168,
+      "outer_activation_norm": 8.91786133976194
+    },
+    {
+      "architecture": "falcon",
+      "route": "sequential_residual",
+      "seed": 20260724,
+      "block_linf": 2.220446049250313e-15,
+      "input_projection_linf": 1.1102230246251565e-15,
+      "negative_control_linf": 4.091164029582885,
+      "patch_ranks": [
+        1,
+        1
+      ],
+      "source_norm": 14.74991446418653,
+      "target_norm": 16.958109111445104,
+      "outer_activation_norm": 7.993424904216861
+    },
+    {
+      "architecture": "falcon",
+      "route": "sequential_residual",
+      "seed": 20260725,
+      "block_linf": 2.4424906541753444e-15,
+      "input_projection_linf": 1.5543122344752192e-15,
+      "negative_control_linf": 4.281896283502809,
+      "patch_ranks": [
+        1,
+        1
+      ],
+      "source_norm": 16.022978193072024,
+      "target_norm": 15.780386169158485,
+      "outer_activation_norm": 7.607218463047409
+    },
+    {
+      "architecture": "falcon",
+      "route": "sequential_residual",
+      "seed": 20260726,
+      "block_linf": 1.9984014443252818e-15,
+      "input_projection_linf": 1.7763568394002505e-15,
+      "negative_control_linf": 4.573291311420342,
+      "patch_ranks": [
+        1,
+        1
+      ],
+      "source_norm": 16.5009904495819,
+      "target_norm": 15.931524734189946,
+      "outer_activation_norm": 8.712246363428857
+    },
+    {
+      "architecture": "falcon",
+      "route": "sequential_residual",
+      "seed": 20260727,
+      "block_linf": 2.220446049250313e-15,
+      "input_projection_linf": 1.9984014443252818e-15,
+      "negative_control_linf": 5.591133754360175,
+      "patch_ranks": [
+        1,
+        1
+      ],
+      "source_norm": 15.951436031582809,
+      "target_norm": 16.33412549333028,
+      "outer_activation_norm": 7.273709864277566
+    },
+    {
+      "architecture": "mixtral",
+      "route": "sparse_moe",
+      "seed": 20260723,
+      "block_linf": 2.55351295663786e-15,
+      "input_projection_linf": 1.4432899320127035e-15,
+      "router_logit_linf": 5.551115123125783e-16,
+      "negative_control_linf": 5.067199991417446,
+      "patch_ranks": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "active_experts": [
+        2,
+        3
+      ],
+      "active_gate_sum": 1.0,
+      "source_norm": 16.196758623791442,
+      "target_norm": 15.503194722664093,
+      "outer_activation_norm": 3.0351078345984925
+    },
+    {
+      "architecture": "mixtral",
+      "route": "sparse_moe",
+      "seed": 20260724,
+      "block_linf": 2.4424906541753444e-15,
+      "input_projection_linf": 2.220446049250313e-15,
+      "router_logit_linf": 8.881784197001252e-16,
+      "negative_control_linf": 3.90132591424009,
+      "patch_ranks": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "active_experts": [
+        2,
+        0
+      ],
+      "active_gate_sum": 1.0,
+      "source_norm": 14.45487468714464,
+      "target_norm": 16.622440242410857,
+      "outer_activation_norm": 4.314520682655095
+    },
+    {
+      "architecture": "mixtral",
+      "route": "sparse_moe",
+      "seed": 20260725,
+      "block_linf": 2.1094237467877974e-15,
+      "input_projection_linf": 1.4432899320127035e-15,
+      "router_logit_linf": 6.661338147750939e-16,
+      "negative_control_linf": 4.190063738280162,
+      "patch_ranks": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "active_experts": [
+        2,
+        0
+      ],
+      "active_gate_sum": 1.0000000596046448,
+      "source_norm": 14.547054045634345,
+      "target_norm": 16.07801290085235,
+      "outer_activation_norm": 3.78345593129416
+    },
+    {
+      "architecture": "mixtral",
+      "route": "sparse_moe",
+      "seed": 20260726,
+      "block_linf": 1.9984014443252818e-15,
+      "input_projection_linf": 2.220446049250313e-15,
+      "router_logit_linf": 6.661338147750939e-16,
+      "negative_control_linf": 4.682562539228224,
+      "patch_ranks": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "active_experts": [
+        3,
+        1
+      ],
+      "active_gate_sum": 1.0000000596046448,
+      "source_norm": 14.856812364422526,
+      "target_norm": 15.159048823611425,
+      "outer_activation_norm": 3.1504923661206177
+    },
+    {
+      "architecture": "mixtral",
+      "route": "sparse_moe",
+      "seed": 20260727,
+      "block_linf": 1.7763568394002505e-15,
+      "input_projection_linf": 3.3306690738754696e-15,
+      "router_logit_linf": 8.881784197001252e-16,
+      "negative_control_linf": 4.549906893760443,
+      "patch_ranks": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "active_experts": [
+        3,
+        2
+      ],
+      "active_gate_sum": 0.9999999701976776,
+      "source_norm": 16.92315254725932,
+      "target_norm": 16.948826239467383,
+      "outer_activation_norm": 4.630340965028759
+    },
+    {
+      "architecture": "gptj",
+      "route": "parallel_residual",
+      "seed": 20260723,
+      "block_linf": 1.3322676295501878e-15,
+      "input_projection_linf": 0.0,
+      "negative_control_linf": 2.745064188569796,
+      "patch_ranks": [
+        1
+      ],
+      "source_norm": 15.447172166686029,
+      "target_norm": 16.277365767357168,
+      "outer_activation_norm": 7.639068435199682
+    },
+    {
+      "architecture": "gptj",
+      "route": "parallel_residual",
+      "seed": 20260724,
+      "block_linf": 1.7763568394002505e-15,
+      "input_projection_linf": 0.0,
+      "negative_control_linf": 2.6623075619986016,
+      "patch_ranks": [
+        1
+      ],
+      "source_norm": 14.74991446418653,
+      "target_norm": 16.958109111445104,
+      "outer_activation_norm": 7.499773374880455
+    },
+    {
+      "architecture": "gptj",
+      "route": "parallel_residual",
+      "seed": 20260725,
+      "block_linf": 1.7763568394002505e-15,
+      "input_projection_linf": 0.0,
+      "negative_control_linf": 2.9526550373893374,
+      "patch_ranks": [
+        1
+      ],
+      "source_norm": 16.022978193072024,
+      "target_norm": 15.780386169158485,
+      "outer_activation_norm": 8.103845548201287
+    },
+    {
+      "architecture": "gptj",
+      "route": "parallel_residual",
+      "seed": 20260726,
+      "block_linf": 1.7763568394002505e-15,
+      "input_projection_linf": 0.0,
+      "negative_control_linf": 2.9500861334332713,
+      "patch_ranks": [
+        1
+      ],
+      "source_norm": 16.5009904495819,
+      "target_norm": 15.931524734189946,
+      "outer_activation_norm": 7.320627066402739
+    },
+    {
+      "architecture": "gptj",
+      "route": "parallel_residual",
+      "seed": 20260727,
+      "block_linf": 1.7763568394002505e-15,
+      "input_projection_linf": 0.0,
+      "negative_control_linf": 2.4963252329265053,
+      "patch_ranks": [
+        1
+      ],
+      "source_norm": 15.951436031582809,
+      "target_norm": 16.33412549333028,
+      "outer_activation_norm": 7.729444750982466
+    }
+  ],
+  "class_sources": {
+    "Gemma3MLP": {
+      "module": "transformers.models.gemma3.modeling_gemma3",
+      "source_path": "/repo/.venv/lib/python3.12/site-packages/transformers/models/gemma3/modeling_gemma3.py",
+      "source_sha256": "b92013d0558381b76b0f74d2b30890cd3aaa9daa58a269d7a12b5a5c5a8e9eb7"
+    },
+    "LlamaMLP": {
+      "module": "transformers.models.llama.modeling_llama",
+      "source_path": "/repo/.venv/lib/python3.12/site-packages/transformers/models/llama/modeling_llama.py",
+      "source_sha256": "31bf660a663259134324bc65da4e155951dc89c5ca46471d2325a9938e859e26"
+    },
+    "MistralMLP": {
+      "module": "transformers.models.mistral.modeling_mistral",
+      "source_path": "/repo/.venv/lib/python3.12/site-packages/transformers/models/mistral/modeling_mistral.py",
+      "source_sha256": "3fbb6202376a1fdf57166d199dd4d43f81226b1e0634ec8b61dcb1ade7de153e"
+    },
+    "FalconMLP": {
+      "module": "transformers.models.falcon.modeling_falcon",
+      "source_path": "/repo/.venv/lib/python3.12/site-packages/transformers/models/falcon/modeling_falcon.py",
+      "source_sha256": "1f42c8de9df666eec8c594f711f69b804a0b356bd4e6f02ceffcb32b693fd20b"
+    },
+    "Qwen2MLP": {
+      "module": "transformers.models.qwen2.modeling_qwen2",
+      "source_path": "/repo/.venv/lib/python3.12/site-packages/transformers/models/qwen2/modeling_qwen2.py",
+      "source_sha256": "a59fa06524227361fb401baf4d177124a27aec146bc01ec931235a9abbab17cb"
+    },
+    "GPT2MLP": {
+      "module": "transformers.models.gpt2.modeling_gpt2",
+      "source_path": "/repo/.venv/lib/python3.12/site-packages/transformers/models/gpt2/modeling_gpt2.py",
+      "source_sha256": "b591253d7acadd39635bbf6f9f6fd0a97d6be5d7cf901074e2d959ff3e478e80"
+    },
+    "GPT2Block": {
+      "module": "transformers.models.gpt2.modeling_gpt2",
+      "source_path": "/repo/.venv/lib/python3.12/site-packages/transformers/models/gpt2/modeling_gpt2.py",
+      "source_sha256": "b591253d7acadd39635bbf6f9f6fd0a97d6be5d7cf901074e2d959ff3e478e80"
+    },
+    "MixtralSparseMoeBlock": {
+      "module": "transformers.models.mixtral.modeling_mixtral",
+      "source_path": "/repo/.venv/lib/python3.12/site-packages/transformers/models/mixtral/modeling_mixtral.py",
+      "source_sha256": "26078dc562c0538d86d0ef5fb92c5260de8bc1f250c756410c29e2e2e19c072d"
+    },
+    "GPTJMLP": {
+      "module": "transformers.models.gptj.modeling_gptj",
+      "source_path": "/repo/.venv/lib/python3.12/site-packages/transformers/models/gptj/modeling_gptj.py",
+      "source_sha256": "2fea54b39fba964e2c7516bbd66e20eff3296c06fe540405d0020dd8e5b8264b"
+    },
+    "GPTJBlock": {
+      "module": "transformers.models.gptj.modeling_gptj",
+      "source_path": "/repo/.venv/lib/python3.12/site-packages/transformers/models/gptj/modeling_gptj.py",
+      "source_sha256": "2fea54b39fba964e2c7516bbd66e20eff3296c06fe540405d0020dd8e5b8264b"
+    }
+  },
+  "topology_checks": {
+    "gptj_parallel_sum": true,
+    "mixtral_router_and_experts": true,
+    "gpt2_conv1d_orientation": true
+  },
+  "zero_assumption_control": {
+    "rejected": true,
+    "message": "input violates the theorem's nonzero assumption"
+  },
+  "independent_numpy_cases": [
+    {
+      "orientation": "linear",
+      "seed": 20260723,
+      "projection_linf": 3.552713678800501e-15,
+      "negative_control_linf": 16.840612378871135
+    },
+    {
+      "orientation": "linear",
+      "seed": 20260724,
+      "projection_linf": 4.440892098500626e-15,
+      "negative_control_linf": 17.545450816657734
+    },
+    {
+      "orientation": "linear",
+      "seed": 20260725,
+      "projection_linf": 7.105427357601002e-15,
+      "negative_control_linf": 25.970709661895608
+    },
+    {
+      "orientation": "linear",
+      "seed": 20260726,
+      "projection_linf": 7.105427357601002e-15,
+      "negative_control_linf": 25.956817118542908
+    },
+    {
+      "orientation": "linear",
+      "seed": 20260727,
+      "projection_linf": 2.9976021664879227e-15,
+      "negative_control_linf": 16.312000810159073
+    },
+    {
+      "orientation": "conv1d",
+      "seed": 20260723,
+      "projection_linf": 4.440892098500626e-15,
+      "negative_control_linf": 16.840612378871135
+    },
+    {
+      "orientation": "conv1d",
+      "seed": 20260724,
+      "projection_linf": 5.329070518200751e-15,
+      "negative_control_linf": 17.545450816657734
+    },
+    {
+      "orientation": "conv1d",
+      "seed": 20260725,
+      "projection_linf": 7.105427357601002e-15,
+      "negative_control_linf": 25.970709661895608
+    },
+    {
+      "orientation": "conv1d",
+      "seed": 20260726,
+      "projection_linf": 7.105427357601002e-15,
+      "negative_control_linf": 25.956817118542908
+    },
+    {
+      "orientation": "conv1d",
+      "seed": 20260727,
+      "projection_linf": 4.440892098500626e-15,
+      "negative_control_linf": 16.312000810159073
+    }
+  ],
+  "runtime_seconds": 27.154529043938965,
+  "limitations": [
+    "Dynamic non-Gemma modules use width 256/intermediate 512.",
+    "Weights are deterministic random initializations of actual Transformers classes.",
+    "Full pretrained Gemma 3 1B evidence is supplied by cumulative Claims 1/2.",
+    "This verifies architecture-level algebra, not language-model quality for every family."
+  ]
+}

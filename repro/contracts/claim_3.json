@@ -1,0 +1,35 @@
+{
+  "claim": 3,
+  "paper_anchor": "Theorem 5 (thm:unified_residual), Section 5; Definitions 3 and 4",
+  "source_revision": "arXiv:2511.17864v3",
+  "statement": "For a residual block T(C,x)=A(C,x)+g(f(A(C,x);theta_f);theta_g), a perfect implicit update exists if f is input-controllable, g is output-controllable, and the relevant activations are nonzero.",
+  "quantifiers": {
+    "input_controllability": "for every nonzero z and z+delta_z",
+    "output_controllability": "for every fixed nonzero v and every desired delta_y",
+    "conclusion": "there exist parameter updates producing exact block-output equality"
+  },
+  "assumptions": [
+    "the block has the stated residual decomposition",
+    "the inner activation is input-controllable",
+    "the outer activation is output-controllable",
+    "all denominators named by the construction are nonzero"
+  ],
+  "acceptance": {
+    "architectures": [
+      "Gemma3MLP",
+      "LlamaMLP",
+      "MistralMLP",
+      "FalconMLP",
+      "Qwen2MLP",
+      "GPT2MLP",
+      "MixtralSparseMoeBlock",
+      "GPTJBlock"
+    ],
+    "seeds_per_route": 5,
+    "maximum_float64_linf": 1e-10,
+    "minimum_negative_control_linf": 1e-4,
+    "requires_independent_numpy_checker": true,
+    "requires_nonzero_assumption_control": true
+  },
+  "verdict_rule": "VERIFIED only if all actual Transformers-class routes satisfy the equality, topology and assumption gates and every negative control separates; otherwise FALSIFIED if a valid counterexample satisfies all assumptions, else BLOCKED."
+}
