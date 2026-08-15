@@ -1,7 +1,12 @@
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
 import torch
 import pytest
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from repro.src.run_gemma_claims_4_5 import invert_rmsnorm
 

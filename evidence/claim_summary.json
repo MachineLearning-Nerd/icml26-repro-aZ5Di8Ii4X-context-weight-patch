@@ -1,0 +1,91 @@
+{
+  "repository": {
+    "original": "MachineLearning-Nerd/icml26-repro-aZ5Di8Ii4X-context-weight-patch",
+    "intended_final": "MachineLearning-Nerd/icml26-context-parameter-equivalence",
+    "paper_arxiv": "2511.17864v3",
+    "openreview": "aZ5Di8Ii4X"
+  },
+  "paper": {
+    "title": "Equivalence of Context and Parameter Updates in Modern Transformer Blocks",
+    "authors": [
+      "Adrian Goldwaser",
+      "Michael Munn",
+      "Javier Gonzalvo",
+      "Benoit Dherin"
+    ],
+    "arxiv": "https://arxiv.org/abs/2511.17864v3",
+    "source_html": "https://arxiv.org/html/2511.17864"
+  },
+  "claims": {
+    "C1": {
+      "status": "VERIFIED_SCOPED",
+      "producer": "repro/src/run_gemma_claims_1_2.py",
+      "evidence": [
+        "outputs/patch_summary.json",
+        ".openresearch/artifacts/claim_1/"
+      ],
+      "summary": "One full Gemma 3 1B layer and five seeded toy trials pass the rank-one construction with negative controls."
+    },
+    "C2": {
+      "status": "VERIFIED_SCOPED",
+      "producer": "repro/src/run_gemma_claims_1_2.py",
+      "evidence": [
+        ".openresearch/artifacts/claim_2/"
+      ],
+      "summary": "All 26 sequential Gemma layers pass for one target history and token."
+    },
+    "C3": {
+      "status": "VERIFIED_ARCHITECTURE_SCOPED",
+      "producer": "repro/src/run_architecture_claims_3_6.py",
+      "evidence": [
+        ".openresearch/artifacts/claim_3/"
+      ],
+      "summary": "40 actual-class trials pass with topology checks, NumPy cross-checks, and the nonzero-input control."
+    },
+    "C4": {
+      "status": "FALSIFIED_SCOPED",
+      "producer": "repro/src/run_gemma_claims_4_5.py",
+      "evidence": [
+        ".openresearch/artifacts/claim_4/"
+      ],
+      "summary": "The paper's exact 87.5% naive bfloat16 percentage is not observed; the pinned run matches 100/100 tokens."
+    },
+    "C5": {
+      "status": "FALSIFIED_SCOPED",
+      "producer": "repro/src/run_gemma_claims_4_5.py",
+      "evidence": [
+        ".openresearch/artifacts/claim_5/"
+      ],
+      "summary": "Stable bfloat16 lowers worst logit error but does not improve token agreement beyond the already 100/100 naive run."
+    },
+    "C6": {
+      "status": "VERIFIED_ARCHITECTURE_SCOPED",
+      "producer": "repro/src/run_architecture_claims_3_6.py",
+      "evidence": [
+        ".openresearch/artifacts/claim_6/"
+      ],
+      "summary": "Eight named actual Transformers architecture forms pass at reduced deterministic widths."
+    },
+    "toy_baseline": {
+      "status": "VERIFIED_TOY",
+      "producer": "repro/src/run_patch.py",
+      "evidence": [
+        "outputs/patch_summary.json"
+      ],
+      "summary": "Five seeded d=64, hidden=128 rank-one trials pass; this is not full-model evidence."
+    },
+    "full_paper_experiments": {
+      "status": "NOT_REPRODUCED",
+      "summary": "Theorem proofs, every checkpoint, all image/Falcon studies, every ablation, and universal hardware behavior are outside this audit."
+    }
+  },
+  "invariants": {
+    "focused_tests": 5,
+    "claim_verifiers": 4,
+    "full_gemma_layers": 26,
+    "architecture_routes": 8,
+    "precision_tokens_per_method": 100,
+    "tracked_generated_logs": false,
+    "tracked_trackio": false
+  }
+}

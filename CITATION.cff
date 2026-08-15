@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+message: "If this audit or its evidence is useful, please cite the paper and the software."
+title: "ICML 2026 audit: Equivalence of Context and Parameter Updates in Modern Transformer Blocks"
+type: software
+authors:
+  - family-names: "MachineLearning-Nerd"
+    given-names: "MachineLearning-Nerd"
+repository-code: "https://github.com/MachineLearning-Nerd/icml26-context-parameter-equivalence"
+url: "https://github.com/MachineLearning-Nerd/icml26-context-parameter-equivalence"
+version: "0.1.0"
+date-released: "2026-08-15"
+license: "NOASSERTION"
+keywords:
+  - implicit weight updates
+  - transformer
+  - contextual equivalence
+  - reproducibility
+  - ICML 2026
+references:
+  - type: article
+    authors:
+      - family-names: "Goldwaser"
+        given-names: "Adrian"
+      - family-names: "Munn"
+        given-names: "Michael"
+      - family-names: "Gonzalvo"
+        given-names: "Javier"
+      - family-names: "Dherin"
+        given-names: "Benoit"
+    title: "Equivalence of Context and Parameter Updates in Modern Transformer Blocks"
+    year: 2026
+    url: "https://arxiv.org/abs/2511.17864v3"
+    doi: "10.48550/arXiv.2511.17864"
+    eprint: "2511.17864"

@@ -157,8 +157,8 @@ logs, so no dollar amount is estimated. No GPU was used.
 - Paper source: arXiv v3 archive SHA-256
   `c90b94ebadaf527640c52ed61e4de497ae8ebff7ab449c47c8939584ef3a74d3`
 - Fixed command: `uv run --frozen python repro/run_campaign.py`
-- Winning release branch:
-  [`orx/release-candidate-evidence-and-public-report`](https://github.com/MachineLearning-Nerd/icml26-repro-aZ5Di8Ii4X-context-weight-patch/tree/orx/release-candidate-evidence-and-public-report)
+- Winning release snapshot:
+  [`evidence/release-candidate`](https://github.com/MachineLearning-Nerd/icml26-context-parameter-equivalence/tree/evidence/release-candidate)
 - Winning release commit: `362a0a1f8c8d2d1099b8efe11022888816837654`
 - Winning run: `c73d8345-e83b-457b-872a-b4dc368cb2f7`
 - Compute: Hugging Face `cpu-upgrade`, 58m12s for the final cumulative run

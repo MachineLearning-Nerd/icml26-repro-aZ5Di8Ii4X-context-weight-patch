@@ -1,7 +1,7 @@
 [project]
-name = "context-weight-patch-reproduction"
+name = "icml26-context-parameter-equivalence"
 version = "0.1.0"
-description = "Reproduction of arXiv 2511.17864"
+description = "Scoped ICML 2026 audit of arXiv 2511.17864"
 requires-python = ">=3.12,<3.13"
 dependencies = [
   "huggingface-hub>=0.34,<2",
@@ -21,4 +21,3 @@ dependencies = [
 
 [tool.uv]
 package = false
-

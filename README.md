@@ -1,75 +1,165 @@
-# Reproducing context-equivalent weight patches on Gemma 3
+# Context–Parameter Equivalence Audit — ICML 2026
 
-[![Open in molab](https://marimo.io/molab-shield.svg)](https://molab.marimo.io/github/MachineLearning-Nerd/icml26-repro-aZ5Di8Ii4X-context-weight-patch/blob/master/notebooks/context_weight_patch_reproduction.py)
+Independent reproduction audit of *Equivalence of Context and Parameter
+Updates in Modern Transformer Blocks* by Adrian Goldwaser, Michael Munn, Javier
+Gonzalvo, and Benoit Dherin.
 
-This CPU-only campaign tests all six judged claims from
-[*Equivalence of Context and Parameter Updates in Modern Transformer Blocks*](https://arxiv.org/abs/2511.17864)
-on the exact public Gemma 3 1B weights and actual Transformers architecture
-classes. The previous live judge score is **2/12**; no score increase is claimed
-until the live judge evaluates the published Hugging Face revision
-`e2cc20512271c1bbbe2ee41865137c84af0c693f`. The project is **awaiting judge
-reevaluation**.
+- Paper: [arXiv:2511.17864v3](https://arxiv.org/abs/2511.17864v3)
+- OpenReview: [aZ5Di8Ii4X](https://openreview.net/forum?id=aZ5Di8Ii4X)
+- Intended repository:
+  [MachineLearning-Nerd/icml26-context-parameter-equivalence](https://github.com/MachineLearning-Nerd/icml26-context-parameter-equivalence)
+- Original repository: icml26-repro-aZ5Di8Ii4X-context-weight-patch
 
-The central algebraic and multilayer claims are verified on the full 26-layer,
-999,885,952-parameter model. The reported precision contrast is not observed:
-float32, naive bfloat16, and stable bfloat16 each match **100/100** greedy token
-predictions, rather than the paper's 100% / 87.5% contrast or 87.5%-to-98%
-improvement. Stable inversion still reduces worst logit error from **0.375 to
-0.25**. We therefore classify the exact percentage Claims 4 and 5 as
-**FALSIFIED under this setup**, not as “failed to reproduce.”
+The paper proves that, under controllability and nonzero-activation
+assumptions, context-dependent changes in modern Transformer blocks can be
+represented by token-specific rank-one updates to MLP weights and, for
+Gemma-style blocks, an RMSNorm scale update. It extends the construction from
+one block to multilayer models and discusses numerical stability.
 
-The non-Gemma architecture checks use the actual pinned Transformers classes
-at reduced width with deterministic weights. This is a direct test of the
-dimension-independent construction, but not pretrained quality evidence for
-every named model. No GPU was used.
+This repository is an independent audit, not the authors' implementation. It
+does not claim theorem proofs, universal hardware behavior, pretrained
+evidence for every architecture family, or author endorsement.
 
-- [Illustrated technical report](reports/context-parameter-equivalence-2026-07-24/report.md)
-- [Self-contained marimo notebook](notebooks/context_weight_patch_reproduction.py)
-- [Publication record and exact allowlist](reports/context-parameter-equivalence-2026-07-24/release/approval-report.md)
-- Reproduce everything: `uv run --frozen python repro/run_campaign.py`
+## Audit scorecard
 
-## Claim results
+| Claim | Scope of the evidence | Status |
+|---|---|---|
+| C1 — Gemma block equivalence | One full Gemma 3 1B layer/token plus five-seed toy checks and negative controls | VERIFIED_SCOPED |
+| C2 — multilayer extension | Sequential construction through all 26 Gemma layers for one target token | VERIFIED_SCOPED |
+| C3 — controllability framework | 40 trials across eight actual pinned Transformers class forms, with topology and assumption controls | VERIFIED_ARCHITECTURE_SCOPED |
+| C4 — float32 versus naive bfloat16 percentages | Five prompts × 20 greedy tokens; observed 100/100 bfloat16 instead of the paper's 87.5% | FALSIFIED_SCOPED |
+| C5 — stable bfloat16 percentage improvement | Naive and stable both 100/100; stable improves worst logit error but not token agreement | FALSIFIED_SCOPED |
+| C6 — named architecture coverage | Gemma, Llama, Falcon, Mistral, Mixtral, Qwen, GPT-2, and GPT-J actual classes | VERIFIED_ARCHITECTURE_SCOPED |
 
-| Claim | Paper statement | Observed evidence | Assessment |
-|---|---|---|---|
-| 1 | A Gemma block admits rank-one gate/up patches plus an RMS scale patch | Full Gemma 3 1B layer-0 output L∞ `7.629e-06`; explicit patch checks pass | VERIFIED |
-| 2 | The construction extends inductively through all layers | 26/26 layers; maximum layer L∞ `6.104e-05`; final logit L∞ `2.480e-05`; same top-1 | VERIFIED |
-| 3 | Input/output controllability suffices | 40 actual-class trials; maximum block L∞ `4.441e-15`; invalid zero input rejected | VERIFIED |
-| 4 | Float32 is 100% while naive bfloat16 is 87.5% | Both are `100/100`; repeated complete runs agree on the percentage | FALSIFIED |
-| 5 | Stable inversion raises 87.5% to 98% | Naive and stable are both `100/100`; stable lowers worst logit error | FALSIFIED |
-| 6 | The construction covers the named architecture families | Gemma, Llama, Falcon, Mistral, Mixtral/MoE, Qwen, GPT-2 and GPT-J all pass | VERIFIED (architecture level) |
+“Falsified” is deliberately narrow: the exact percentage contract is
+contradicted under the pinned checkpoint and CPU protocol. It is not a claim
+that the algebraic construction is false on every implementation.
 
-## Experiment log
+## How each claim is produced
 
-The command below is copied verbatim from `orx exp status`; it is identical on
-every experiment node.
+| Claim | Producer path | Independent or durable evidence |
+|---|---|---|
+| C1 | repro/src/run_patch.py establishes the rank-one identity; repro/src/run_gemma_claims_1_2.py checks full Gemma layer 0 | outputs/patch_summary.json and .openresearch/artifacts/claim_1/ |
+| C2 | repro/src/run_gemma_claims_1_2.py computes layer-specific patches from the previous reduced-context state through all 26 blocks | .openresearch/artifacts/claim_2/ |
+| C3 | repro/src/run_architecture_claims_3_6.py instantiates actual Transformers classes and checks input/output controllability, topology, and negative controls | .openresearch/artifacts/claim_3/ |
+| C4 | repro/src/run_gemma_claims_4_5.py runs the five-prompt, 100-token precision comparison; the verifier checks the evidence contract | .openresearch/artifacts/claim_4/ |
+| C5 | The same precision producer evaluates naive/stable bfloat16; repro/src/run_explicit_materialization_claims_4_5.py audits explicit full matrices on five tokens | .openresearch/artifacts/claim_5/ |
+| C6 | repro/src/run_architecture_claims_3_6.py covers sequential, Conv1D, sparse-MoE, and parallel residual routes | .openresearch/artifacts/claim_6/ |
 
-| Branch / experiment | Purpose or change | Exact run command | Assessment / outcome | Compute |
-|---|---|---|---|---|
-| [`orx/baseline-judged-toy-reproduction`](https://github.com/MachineLearning-Nerd/icml26-repro-aZ5Di8Ii4X-context-weight-patch/tree/orx/baseline-judged-toy-reproduction) | Freeze the judged toy baseline and uv lock | `uv run --frozen python repro/run_campaign.py` | TOY baseline retained | Local CPU, 15s |
-| [`orx/real-gemma-3-1b-block-and-multilayer`](https://github.com/MachineLearning-Nerd/icml26-repro-aZ5Di8Ii4X-context-weight-patch/tree/orx/real-gemma-3-1b-block-and-multilayer) | Full pretrained Gemma Claims 1–2 | `uv run --frozen python repro/run_campaign.py` | Claims 1–2 VERIFIED | HF `cpu-upgrade`, 1m30s |
-| [`orx/batched-five-prompt-precision-sweep`](https://github.com/MachineLearning-Nerd/icml26-repro-aZ5Di8Ii4X-context-weight-patch/tree/orx/batched-five-prompt-precision-sweep) | Five prompts × 20 tokens × precision modes | `uv run --frozen python repro/run_campaign.py` | 100/100 for all modes; provisional Claim 5 label rejected | HF `cpu-upgrade`, 57m05s |
-| [`orx/exact-precision-verdict-plus-architecture-confor`](https://github.com/MachineLearning-Nerd/icml26-repro-aZ5Di8Ii4X-context-weight-patch/tree/orx/exact-precision-verdict-plus-architecture-confor) | Correct joint contract; add named architectures | `uv run --frozen python repro/run_campaign.py` | Claims 3/6 VERIFIED; Claims 4/5 FALSIFIED | HF `cpu-upgrade`, 1h26m |
-| [`orx/explicit-bfloat16-matrix-materialization-audit`](https://github.com/MachineLearning-Nerd/icml26-repro-aZ5Di8Ii4X-context-weight-patch/tree/orx/explicit-bfloat16-matrix-materialization-audit) | Materialize every layer's bfloat16 matrices on five audit tokens | `uv run --frozen python repro/run_campaign.py` | 10/10 contextual/action/explicit token matches; route CONCORDANT | HF `cpu-upgrade`, 23m09s |
-| [`orx/release-candidate-evidence-and-public-report`](https://github.com/MachineLearning-Nerd/icml26-repro-aZ5Di8Ii4X-context-weight-patch/tree/orx/release-candidate-evidence-and-public-report) | Final cumulative regression and durable text evidence | `uv run --frozen python repro/run_campaign.py` | All six verdicts retained; 5/5 tests; evidence payload hash-verified | HF `cpu-upgrade`, 58m12s |
-| `master` | README, report, notebook, exact Space mirror, and publication manifest | Not run as an experiment (publication surface) | Published to existing Space; awaiting judge reevaluation | None |
+The machine-readable scope and verdict ledger is
+[evidence/claim_summary.json](evidence/claim_summary.json). The detailed
+claim-to-evidence explanation is [CLAIM_EVIDENCE.md](CLAIM_EVIDENCE.md).
 
-## Reproduce
+## What the evidence actually shows
 
-Requirements: Python 3.12, `uv`, CPU RAM sufficient for Gemma 3 1B, and access
-to the public checkpoint mirror. The lockfile is authoritative.
+### Full Gemma evidence
 
-```bash
+The pinned public mirror is
+unsloth/gemma-3-1b-it at revision
+5b11413a10db4e486ef16a20101fd028f8f2499c, with 999,885,952 parameters, 26
+layers, hidden width 1152, and intermediate width 6912. The official weight
+blob identity is recorded in the Claim 1 contract.
+
+- Layer-0 output L-infinity error: 7.62939453125e-06.
+- Maximum error across 26 sequential layers: 6.103515625e-05.
+- Final logit error: 2.47955322265625e-05.
+- Unpatched negative-control logit error: 23.490646362304688.
+- The final top-1 token agrees for the tested prompt and target position.
+
+These are one-checkpoint, token-specific results. They do not show that one
+patch can be reused for arbitrary future queries.
+
+### Precision discrepancy
+
+The paper reports 100% float32 agreement and 87.5% naive bfloat16 agreement.
+The arXiv v3 prose gives a 100% stable endpoint, while the judged rendering
+retained in the provenance record says 98%. This audit observes:
+
+| Method | Paper or judged endpoint | Observed | Maximum logit error |
+|---|---:|---:|---:|
+| float32 naive | 100% | 100/100 | 2.6702880859375e-05 |
+| bfloat16 naive | 87.5% | 100/100 | 0.375 |
+| bfloat16 stable | 98% judged / 100% arXiv v3 | 100/100 | 0.25 |
+
+Stable inversion improves the worst logit error, but there is no token
+agreement improvement because the naive run already matches every audited
+token. The explicit full-matrix route agrees on 10/10 audited source-token
+pairs; five tokens are a fidelity audit, not a replacement 100-token estimate.
+
+### Architecture scope
+
+Five deterministic seeds are used for each of eight actual Transformers class
+routes. The maximum valid block error is 4.440892098500626e-15 and the minimum
+omitted-patch negative control is 2.4963252329265053. Non-Gemma routes use
+reduced-width random weights, so this is architecture-level evidence rather
+than pretrained language-quality evidence.
+
+## Branch map
+
+The final repository keeps the experiment snapshots as descriptive evidence
+branches. The complete original-to-final mapping and pre-rename tips are in
+[BRANCH_AUDIT.md](BRANCH_AUDIT.md).
+
+| Final branch | Purpose |
+|---|---|
+| main | Combined publication surface and cumulative evidence |
+| evidence/baseline-toy | Original five-seed rank-one toy baseline |
+| evidence/architecture-matrix | Initial architecture-conformance scaffold |
+| evidence/gemma-block-multilayer | Full Gemma block and multilayer snapshot |
+| evidence/precision-cross-check | Gemma precision setup and metadata cross-check |
+| evidence/stable-inversion | Stable-inversion and precision implementation |
+| evidence/precision-sweep | Batched five-prompt precision sweep |
+| evidence/precision-verdict-architecture | Joint precision verdict plus architecture checks |
+| evidence/explicit-bfloat16-audit | Explicit bfloat16 matrix-materialization audit |
+| evidence/release-candidate | Final cumulative evidence release candidate |
+
+No branch named or prefixed orx remains in the final remote state.
+
+## Reproduce or verify
+
+The lockfile requires Python 3.12 and CPU-capable PyTorch. The full campaign
+downloads the pinned public checkpoint and can take hours on CPU.
+
+~~~bash
 uv sync --frozen
+uv run --frozen pytest -q
+uv run --frozen python repro/verifiers/verify_claims_1_2.py
+uv run --frozen python repro/verifiers/verify_claims_3_6.py
+uv run --frozen python repro/verifiers/verify_claims_4_5.py
+uv run --frozen python repro/verifiers/verify_explicit_materialization_claims_4_5.py
+uv run --frozen python repro/src/verify_final.py
+~~~
+
+To regenerate the complete campaign evidence, including the model download:
+
+~~~bash
 uv run --frozen python repro/run_campaign.py
-```
+~~~
 
-The formal runs used Hugging Face `cpu-upgrade` only after local CPU proved
-insufficient. The fixed command never changes; variants live in committed code.
+The report and page-by-page evidence are under
+[reports/context-parameter-equivalence-2026-07-24/](reports/context-parameter-equivalence-2026-07-24/)
+and [pages/](pages/). Source provenance and input boundaries are documented in
+[SOURCE_MANIFEST.md](SOURCE_MANIFEST.md).
 
-## Previous toy-only surface
+Machine-readable citation metadata is in [CITATION.cff](CITATION.cff).
 
-The repository originally confirmed the rank-one identity on small random
-matrices (`d=64`, hidden size 128). Those tests and negative controls remain in
-the cumulative suite, but they are labeled **TOY** and are not presented as
-full-scale evidence.
+## Citation
+
+~~~bibtex
+@article{goldwaser2026equivalence,
+  title   = {Equivalence of Context and Parameter Updates in Modern Transformer Blocks},
+  author  = {Goldwaser, Adrian and Munn, Michael and Gonzalvo, Javier and Dherin, Benoit},
+  journal = {arXiv preprint arXiv:2511.17864},
+  year    = {2026},
+  doi     = {10.48550/arXiv.2511.17864},
+  url     = {https://arxiv.org/abs/2511.17864}
+}
+~~~
+
+## Thank you
+
+Thank you to Adrian Goldwaser, Michael Munn, Javier Gonzalvo, and Benoit Dherin
+for publishing the paper and making the mathematical construction concrete
+enough to audit. The distinction between exact algebraic equivalence,
+controllability assumptions, and finite-precision behavior makes this a useful
+reproducibility case study.

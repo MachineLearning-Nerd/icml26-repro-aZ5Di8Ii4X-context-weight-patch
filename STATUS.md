@@ -1,21 +1,38 @@
-# Publication status — awaiting judge
+# Reproduction status
 
-Paper: *Equivalence of Context and Parameter Updates in Modern Transformer
-Blocks* (`arXiv:2511.17864`, OpenReview `aZ5Di8Ii4X`).
+## Repository
 
-- Current live judge score: **2/12**
-- Judged Space revision:
-  `e85dfc7775923513936705737b393955303db5f4`
-- Published candidate revision:
-  `e2cc20512271c1bbbe2ee41865137c84af0c693f`
-- State: **AWAITING JUDGE REEVALUATION**
-- Winning experiment branch:
-  `orx/release-candidate-evidence-and-public-report`
-- Winning experiment SHA:
-  `362a0a1f8c8d2d1099b8efe11022888816837654`
-- Final run:
-  `c73d8345-e83b-457b-872a-b4dc368cb2f7`
+- Intended final name: MachineLearning-Nerd/icml26-context-parameter-equivalence
+- Original name: MachineLearning-Nerd/icml26-repro-aZ5Di8Ii4X-context-weight-patch
+- Publication branch: main
+- Paper: [Equivalence of Context and Parameter Updates in Modern Transformer Blocks](https://arxiv.org/abs/2511.17864v3)
+- OpenReview: [aZ5Di8Ii4X](https://openreview.net/forum?id=aZ5Di8Ii4X)
 
-The published revision contains 81 allowlisted UTF-8 text files, all
-downloaded from the exact revision and verified against the approved SHA-256
-manifest. No score increase is claimed until a new live judge verdict appears.
+## Scoped verdicts
+
+- C1 Gemma block: VERIFIED_SCOPED.
+- C2 26-layer Gemma extension: VERIFIED_SCOPED.
+- C3 controllability framework: VERIFIED_ARCHITECTURE_SCOPED.
+- C4 exact float32/naive-bfloat16 percentages: FALSIFIED_SCOPED.
+- C5 exact stable-bfloat16 percentage improvement: FALSIFIED_SCOPED.
+- C6 named architecture forms: VERIFIED_ARCHITECTURE_SCOPED.
+
+## Verification
+
+The focused suite contains five tests. The four committed claim verifiers
+check the durable JSON evidence and negative controls. The final verifier
+checks the scorecard, evidence paths, branch naming documentation, and cleanup
+invariants without downloading model weights.
+
+The historical publication gate records a live judge score of 2/12 and a
+published Hugging Face revision. No new judge score or author endorsement is
+claimed by this repository.
+
+## Attribution
+
+All publication commits and rewritten reachable history use:
+
+MachineLearning-Nerd <MachineLearning-Nerd@users.noreply.github.com>
+
+The paper authors are thanked and cited in README.md, CITATION.cff, and
+SOURCE_MANIFEST.md. No author endorsement is implied.
