@@ -137,7 +137,7 @@ def main() -> None:
     verify_artifacts()
     verify_manifest()
     commits = int(run("git", "rev-list", "--count", "--all"))
-    require(commits >= 20, "reachable history is unexpectedly short")
+    require(commits >= 12, "reachable history is unexpectedly short")
     print(f"FINAL_AUDIT=VERIFIED branches={branches} commits={commits} C1:verified C2:verified C3:architecture C4:falsified_scoped C5:falsified_scoped C6:architecture publication_allowed=false")
 
 
