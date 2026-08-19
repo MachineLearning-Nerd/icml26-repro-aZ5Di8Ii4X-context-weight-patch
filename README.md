@@ -128,6 +128,7 @@ uv run --frozen python repro/verifiers/verify_claims_3_6.py
 uv run --frozen python repro/verifiers/verify_claims_4_5.py
 uv run --frozen python repro/verifiers/verify_explicit_materialization_claims_4_5.py
 uv run --frozen python repro/src/verify_final.py
+python3 verify_final.py
 ~~~
 
 To regenerate the complete campaign evidence, including the model download:
@@ -142,6 +143,11 @@ and [pages/](pages/). Source provenance and input boundaries are documented in
 [SOURCE_MANIFEST.md](SOURCE_MANIFEST.md).
 
 Machine-readable citation metadata is in [CITATION.cff](CITATION.cff).
+
+The final scoped report is [REPORT.md](REPORT.md), machine-readable claim and reproduction
+records are [claims.json](claims.json) and [reproduction_verdicts.json](reproduction_verdicts.json),
+and the root verifier also checks [EVIDENCE_MANIFEST.json](EVIDENCE_MANIFEST.json) and
+[AUTONOMOUS_STATE.json](AUTONOMOUS_STATE.json).
 
 ## Citation
 

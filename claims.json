@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "repository": "MachineLearning-Nerd/icml26-context-parameter-equivalence",
+  "paper": {
+    "title": "Equivalence of Context and Parameter Updates in Modern Transformer Blocks",
+    "arxiv": "2511.17864v3",
+    "openreview": "aZ5Di8Ii4X",
+    "authors": ["Adrian Goldwaser", "Michael Munn", "Javier Gonzalvo", "Benoit Dherin"]
+  },
+  "overall_verdict": "VERIFIED_SCOPED_WITH_NARROW_PRECISION_BOUNDARY",
+  "publication_allowed": false,
+  "claims": [
+    {
+      "id": "C1",
+      "paper_claim": "Gemma block context-to-parameter equivalence",
+      "status": "VERIFIED_SCOPED",
+      "production_path": "repro/src/run_patch.py -> repro/src/run_gemma_claims_1_2.py",
+      "scope": "One full Gemma 3 1B layer/token plus five seeded toy trials and negative controls.",
+      "evidence": ["outputs/patch_summary.json", ".openresearch/artifacts/claim_1/"]
+    },
+    {
+      "id": "C2",
+      "paper_claim": "Multilayer extension",
+      "status": "VERIFIED_SCOPED",
+      "production_path": "repro/src/run_gemma_claims_1_2.py",
+      "scope": "Sequential construction through all 26 Gemma layers for one target history and token.",
+      "evidence": [".openresearch/artifacts/claim_2/"]
+    },
+    {
+      "id": "C3",
+      "paper_claim": "Controllability framework across modern Transformer blocks",
+      "status": "VERIFIED_ARCHITECTURE_SCOPED",
+      "production_path": "repro/src/run_architecture_claims_3_6.py",
+      "scope": "40 trials across eight actual pinned Transformers class forms with topology, NumPy, and nonzero-input controls.",
+      "evidence": [".openresearch/artifacts/claim_3/"]
+    },
+    {
+      "id": "C4",
+      "paper_claim": "Exact float32 and naive-bfloat16 agreement percentages",
+      "status": "FALSIFIED_SCOPED",
+      "production_path": "repro/src/run_gemma_claims_4_5.py",
+      "scope": "Under the pinned five-prompt/100-token CPU protocol, naive bfloat16 is 100/100 rather than the paper's exact 87.5%.",
+      "evidence": [".openresearch/artifacts/claim_4/"]
+    },
+    {
+      "id": "C5",
+      "paper_claim": "Stable bfloat16 improves token agreement",
+      "status": "FALSIFIED_SCOPED",
+      "production_path": "repro/src/run_gemma_claims_4_5.py -> repro/src/run_explicit_materialization_claims_4_5.py",
+      "scope": "Naive and stable bfloat16 both reach 100/100; stable lowers worst logit error from 0.375 to 0.25.",
+      "evidence": [".openresearch/artifacts/claim_5/"]
+    },
+    {
+      "id": "C6",
+      "paper_claim": "Named architecture coverage",
+      "status": "VERIFIED_ARCHITECTURE_SCOPED",
+      "production_path": "repro/src/run_architecture_claims_3_6.py",
+      "scope": "Gemma, Llama, Falcon, Mistral, Mixtral, Qwen, GPT-2, and GPT-J at reduced deterministic widths.",
+      "evidence": [".openresearch/artifacts/claim_6/"]
+    }
+  ],
+  "limitations": [
+    "Theorem proofs, universal hardware behavior, all checkpoints, image/Falcon studies, and every ablation are not reproduced.",
+    "The Gemma evidence is one-checkpoint and token-specific; it does not establish arbitrary-query reuse.",
+    "Architecture routes other than Gemma use reduced-width random weights and are architecture-level evidence.",
+    "The historical 2/12 judge score is provenance only; no new score or author endorsement is claimed."
+  ]
+}

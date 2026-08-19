@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "openreview_id": "aZ5Di8Ii4X",
+  "phase": "published_and_verified",
+  "next_action": "select_next_icml_repository",
+  "active_run_ids": [],
+  "completed_milestones": [
+    "paper_and_source_pins",
+    "Gemma_block_and_multilayer_audit",
+    "architecture_matrix_audit",
+    "precision_boundary_audit",
+    "repository_and_branch_normalization",
+    "standardized_dossier_published",
+    "machine_readable_reproduction_verdicts",
+    "dossier_manifest_and_final_verifier",
+    "fresh_clone_verification"
+  ],
+  "failed_attempts": [],
+  "claim_attempt_counts": {"C1": 1, "C2": 1, "C3": 1, "C4": 1, "C5": 1, "C6": 1},
+  "last_checkpoint": "2026-08-19T13:55:00+05:30",
+  "last_known_git_commit": "566f3d3",
+  "publication_allowed": false,
+  "overall_verdict": "VERIFIED_SCOPED_WITH_NARROW_PRECISION_BOUNDARY",
+  "compute_policy": "Use committed evidence and the inner verifier; do not download model weights or rerun the full campaign during final-state verification.",
+  "selection_rationale": "The repository has durable Gemma, architecture, and precision evidence plus ten purpose-named branches; the shared dossier makes the scoped falsifications and non-claims machine-readable.",
+  "github_repository": "https://github.com/MachineLearning-Nerd/icml26-context-parameter-equivalence",
+  "former_github_repository": "https://github.com/MachineLearning-Nerd/icml26-repro-aZ5Di8Ii4X-context-weight-patch",
+  "branch_count": 10,
+  "branch_set": [
+    "main",
+    "evidence/architecture-matrix",
+    "evidence/baseline-toy",
+    "evidence/precision-sweep",
+    "evidence/precision-verdict-architecture",
+    "evidence/explicit-bfloat16-audit",
+    "evidence/stable-inversion",
+    "evidence/precision-cross-check",
+    "evidence/gemma-block-multilayer",
+    "evidence/release-candidate"
+  ],
+  "claim_statuses": {
+    "C1": "VERIFIED_SCOPED",
+    "C2": "VERIFIED_SCOPED",
+    "C3": "VERIFIED_ARCHITECTURE_SCOPED",
+    "C4": "FALSIFIED_SCOPED",
+    "C5": "FALSIFIED_SCOPED",
+    "C6": "VERIFIED_ARCHITECTURE_SCOPED"
+  },
+  "dossier_files": [
+    "CLAIM_EVIDENCE.md",
+    "SOURCE_MANIFEST.md",
+    "ENVIRONMENT.md",
+    "REPORT.md",
+    "BRANCH_AUDIT.md",
+    "CITATION.cff",
+    "AUTHOR_THANK_YOU.md",
+    "claims.json",
+    "reproduction_verdicts.json",
+    "EVIDENCE_MANIFEST.json",
+    "verify_final.py"
+  ]
+}

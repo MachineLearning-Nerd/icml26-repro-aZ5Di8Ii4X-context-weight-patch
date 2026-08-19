@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "hash_algorithm": "sha256",
+  "scope": "Context-parameter equivalence paper identity, claim ledger, source/branch audit, durable evidence, and final verification surface",
+  "files": {
+    "README.md": "2d8e197d0dd94fd904390b055c2d68d9758d8311ba3349b9c3e066a0a04ea396",
+    "STATUS.md": "486fdbb58bf1c690f305e5688ec49bd74a54af6d7b3ee855a21c21b377935ee1",
+    "CLAIM_EVIDENCE.md": "3a4cebf4ac301fbcb6b0c0dfbf1b1a44abb289229efbbf98aa61510f2ee137ab",
+    "SOURCE_MANIFEST.md": "b3d728576fba33bcba5e588cf20ce7757a9a442d16c5e1644529e3e232af38f9",
+    "ENVIRONMENT.md": "628e91163c1bd8ac48f0ccb63d97fcbd7411b4602631579ec46bd468ad59eb52",
+    "REPORT.md": "947e4756a13c74042a5ff4e7931dfd6c5b915d1a1ce6bc1b2720bb914c5fcf06",
+    "BRANCH_AUDIT.md": "1e8774937fc3d548745e0bbb1be53929542e583753af04873df8d26352705bf3",
+    "CITATION.cff": "87ad915b8ec9d0cebc542e2b7ed1b008e8733bae9f4d04f6f886180f5aede71c",
+    "AUTHOR_THANK_YOU.md": "e33dead3693007bef55a6cc63e66e12116ad02770731ed8f3fd5479bebf0f5b0",
+    "claims.json": "0b405a8c5f8cb0dacad4fe4f7ed5a6e18d627e97af89929d8621c76538ef7e20",
+    "reproduction_verdicts.json": "cbbc0b9a43514420f2df28a6b34ee9a058421f4ff314c81520f97bffd826191b",
+    "verify_final.py": "dc8771910206e33a82599328623279ec215c9b1b61b1be357588a645d4cf4a9e",
+    "repro/src/verify_final.py": "454830cd2c926e511272cbf4679ba5e1759ffda60566a08a996beed7950ce27f",
+    "evidence/claim_summary.json": "bc39dc52bb26184269d3b86e9922571adc7432e8a8376ae33d915556c347b5bf",
+    "outputs/patch_summary.json": "58ef82fd93d133bf38f1601edb5a53fe35617490ce7dca81af38061ddf0c908a",
+    ".openresearch/artifacts/claim_1/raw_results.json": "b4394bd723ae80cd3c6c0cbed49d8807c5c690a52e5e745475b604d785d9f1e6",
+    ".openresearch/artifacts/claim_2/raw_results.json": "b4394bd723ae80cd3c6c0cbed49d8807c5c690a52e5e745475b604d785d9f1e6",
+    ".openresearch/artifacts/claim_3/raw_results.json": "96b006f61c5322a92098f2bddd7fd41a60edc947f591faaa014a58651a037b60",
+    ".openresearch/artifacts/claim_4/raw_results.json": "ce49d05730879bbeaa3ff6055375d77f93c2156f3a39398019484834aef6558c",
+    ".openresearch/artifacts/claim_5/explicit_materialization_results.json": "99a52afb7d388b02114bf8c734190ce76b3d57afd8c0bda40ca06a3783659de0",
+    ".openresearch/artifacts/claim_6/raw_results.json": "96b006f61c5322a92098f2bddd7fd41a60edc947f591faaa014a58651a037b60",
+    "publication_gate.json": "735149b4fae088d266f1fffbcf3d1dccb12d8cb8569c045f765d8aeb64226096",
+    "logbook.json": "fa9f8340e62760fae5263f8411eb730a69b9f31e5f163595af655ca95d6002e9"
+  }
+}

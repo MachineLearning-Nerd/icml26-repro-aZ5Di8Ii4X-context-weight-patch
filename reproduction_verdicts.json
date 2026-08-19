@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "repository": "MachineLearning-Nerd/icml26-context-parameter-equivalence",
+  "paper": {
+    "title": "Equivalence of Context and Parameter Updates in Modern Transformer Blocks",
+    "arxiv": "2511.17864v3",
+    "openreview": "aZ5Di8Ii4X"
+  },
+  "overall_verdict": "VERIFIED_SCOPED_WITH_NARROW_PRECISION_BOUNDARY",
+  "publication_allowed": false,
+  "claims": [
+    {"id": "C1", "status": "VERIFIED_SCOPED", "scope": "One full Gemma block/token plus five seeded toy trials and negative controls."},
+    {"id": "C2", "status": "VERIFIED_SCOPED", "scope": "All 26 sequential Gemma layers for one target history and token."},
+    {"id": "C3", "status": "VERIFIED_ARCHITECTURE_SCOPED", "scope": "40 actual-class architecture trials with topology and assumption controls."},
+    {"id": "C4", "status": "FALSIFIED_SCOPED", "scope": "Pinned naive-bfloat16 protocol is 100/100, not the paper's exact 87.5%."},
+    {"id": "C5", "status": "FALSIFIED_SCOPED", "scope": "Stable bfloat16 lowers logit error but does not improve token agreement over 100/100 naive agreement."},
+    {"id": "C6", "status": "VERIFIED_ARCHITECTURE_SCOPED", "scope": "Eight named Transformer architecture forms pass at reduced deterministic widths."}
+  ],
+  "limitations": [
+    "This is a scoped finite and architecture audit, not a complete theorem, benchmark, or universal hardware reproduction.",
+    "C4/C5 are protocol-scoped precision boundaries, not universal refutations."
+  ]
+}
